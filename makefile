@@ -1,11 +1,11 @@
 # All Targets
 all: bin/studio
 
-bin/studio: bin/main.o bin/Customer.o bin/action.o bin/workout.o bin/Trainer.o bin/Studio.o
+bin/studio: bin/main.o bin/Customer.o bin/Action.o bin/Workout.o bin/Trainer.o bin/Studio.o
 #bin/Customer.o bin/action.o bin/workout.o bin/Trainer.o bin/Studio.o //TODO copy this to line 4
 	@echo 'Building target: main'
 	@echo 'Invoking: C++ Linker'
-	g++ -o bin/studio bin/action.o bin/Studio.o bin/Trainer.o bin/workout.o bin/main.o
+	g++ -o bin/studio bin/Action.o bin/Studio.o bin/Trainer.o bin/Workout.o bin/main.o
 	#bin/studio bin/action.o bin/Studio.o bin/Trainer.o bin/workout.o bin/main.o//TODO copy this to line 4
 	@echo 'Finished building target: main'
 	@echo ' '
