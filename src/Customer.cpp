@@ -20,7 +20,7 @@ std::vector<int> SweatyCustomer::order(const std::vector <Workout> &workout_opti
     std::vector<int> workout_plan;
     for (Workout workout: workout_options) {
         if (workout.getType() == 2) // 2 is the enum of cardio  - check if working
-            workout_plan.insert(workout.getId())
+            workout_plan.pushback(workout.getId())
     }
 
     return workout_plan;
@@ -39,7 +39,7 @@ std::vector<int> CheapCustomer::order(const std::vector <Workout> &workout_optio
         }
 
     }
-    workout_plan.insert(minId);
+    workout_plan.pushback(minId);
 
     return workout_plan;
 }

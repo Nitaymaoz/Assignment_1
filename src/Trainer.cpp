@@ -1,11 +1,11 @@
 #include "../include/Trainer.h"
 
-Trainer::Trainer(int t_capacity) {t_capacity=capacity;}
+Trainer::Trainer(int t_capacity) {capacity=t_capacity; open=false;}
 
 int Trainer::getCapacity() const {return capacity;}
 
 void Trainer::addCustomer(Customer *customer) {
-    customersList.insert(customersList.begin(),customer) //currently holding a pointer to a RAM location - later on check if a new object is needed.
+    customersList.insert(customersList.end(),customer) //currently holding a pointer to a RAM location - later on check if a new object is needed.
 }
 
 void Trainer::removeCustomer(int id) {
