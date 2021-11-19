@@ -11,3 +11,7 @@ std::string Workout::getName() const {return name;}
 int Workout::getPrice() const {return price;}
 
 WorkoutType Workout::getType() const {return type;}
+
+
+// Extra functions
+
