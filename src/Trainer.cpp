@@ -49,6 +49,10 @@ void Trainer::order(const int customer_id, const std::vector<int> workout_ids,
             }
         }
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4a06992405069b337a46a66a0c45a5fa099767d3
 }
 
 void Trainer::openTrainer() {open= true;}
