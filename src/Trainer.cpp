@@ -2,6 +2,13 @@
 
 Trainer::Trainer(int t_capacity) {capacity=t_capacity; open=false;}
 
+// Rule of 5
+// Copy Constructor
+Trainer(const Trainer& other){
+
+}
+
+
 int Trainer::getCapacity() const {return capacity;}
 
 void Trainer::addCustomer(Customer *customer) {
@@ -23,10 +30,12 @@ void Trainer::removeCustomer(int id) {
 }
 
 Customer *Trainer::getCustomer(int id) {
-    bool found= false;
     Customer* customer ;
-    for (int i = 0; i < customersList.size() || found; ++i) {
-        if (customersList[i]->getId()==id) customer = customersList[i];
+    for (int i = 0; i < customersList.size() ; ++i) {
+        if (customersList[i]->getId()==id){
+            customer = customersList[i];
+            break;
+        }
     }
     return customer;
 }
