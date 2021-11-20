@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include "Customer.h"
+#include "Studio.h"
 
 enum ActionStatus{
     COMPLETED, ERROR

@@ -14,8 +14,8 @@ public:
     void addCustomer(Customer* customer);
     void removeCustomer(int id);
     Customer* getCustomer(int id);
-    std::vector<Customer*>& getCustomers(); // do we need to create a new object because of the reference?
-    std::vector<OrderPair>& getOrders();  // Likewise
+    std::vector<Customer*>& getCustomers();
+    std::vector<OrderPair>& getOrders();
     void order(const int customer_id, const std::vector<int> workout_ids, const std::vector<Workout>& workout_options);
     void openTrainer();
     void closeTrainer();
