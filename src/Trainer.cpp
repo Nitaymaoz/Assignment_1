@@ -4,9 +4,11 @@ Trainer::Trainer(int t_capacity) {capacity=t_capacity; open=false;}
 
 // Rule of 5
 // Copy Constructor
-Trainer(const Trainer& other){
-
-}
+//Trainer::Trainer(const Trainer& other){
+//    capacity = other.capacity;
+//    open = other.open;
+//
+//}
 
 
 int Trainer::getCapacity() const {return capacity;}
