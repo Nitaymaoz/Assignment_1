@@ -20,7 +20,7 @@ std::vector<int> SweatyCustomer::order(const std::vector <Workout> &workout_opti
     std::vector<int> workout_plan;
     for (Workout workout: workout_options) {
         if (workout.getType() == 2) // 2 is the enum of cardio  - check if working
-            workout_plan.pushback(workout.getId())
+            workout_plan.push_back(workout.getId());
     }
 
     return workout_plan;
@@ -39,7 +39,7 @@ std::vector<int> CheapCustomer::order(const std::vector <Workout> &workout_optio
         }
 
     }
-    workout_plan.pushback(minId);
+    workout_plan.push_back(minId);
 
     return workout_plan;
 }
@@ -71,28 +71,30 @@ std::vector<int> FullBodyCustomer::order(const std::vector <Workout> &workout_op
     std::vector <std::pair<int, int>> sort_anaerobic;
     std::vector <std::pair<int, int>> sort_mix;
     for (Workout workout: workout_options) {
-        if (workout.getType() == 0) sort_anaerobic.push_back(std::make_pair(workout.getPrice(), workout.getId()))
-        else if (workout.getType() == 1) sort_mix.push_back(std::make_pair(workout.getPrice(), workout.getId()))
-        else sort_anaerobic.push_back(std::make_pair(workout.getPrice(), workout.getId()))
+        if (workout.getType() == 0) sort_anaerobic.push_back(std::make_pair(workout.getPrice(), workout.getId()));
+        else if (workout.getType() == 1) sort_mix.push_back(std::make_pair(workout.getPrice(), workout.getId()));
+        else sort_anaerobic.push_back(std::make_pair(workout.getPrice(), workout.getId()));
     }
     std::vector<int> workout_plan;
     if (sort_mix.empty() && sort_cardio.empty() && sort_anaerobic.empty()) return workout_plan;
-//    if (sort_cardio.empty() || sort_mix.empty() || sort_anaerobic.empty()) return workout_plan;
 
-    std::stable_sort(sort_cardio.begin(), workout_plan.end());
-    std::stable_sort(sort_anaerobic.begin(), workout_plan.end());
-    std::stable_sort(sort_mix.begin(), workout_plan.end());
-
-    workout_plan.push_back(sort_anaerobic.begin()->second);  // id of the cheapest anaerobic
-
-    int highestMixPrice = sort_mix.end()->second;
-    for (int i = sort_mix.size() - 2; i >= 0; i--) {
-        if (sort_mix[i].first != highestMixPrice)
-            workout_plan.push_back(sort_mix[i + 1]->second); // id of most expensive mix (with the smallest id)
+    if (!sort_anaerobic.empty()){
+        std::stable_sort(sort_anaerobic.begin(), sort_anaerobic.end());
+        workout_plan.push_back(sort_anaerobic.begin()->second);  // id of the cheapest anaerobic
     }
 
-    workout_plan.push_back(sort_cardio.begin()->second);     //id of cheapest cardio
-
+    if (!sort_mix.empty()){
+        std::stable_sort(sort_mix.begin(), sort_mix.end());
+        int highestMixPrice = sort_mix.end()->second;
+        for (int i = sort_mix.size() - 2; i >= 0; i--) {
+            if (sort_mix[i].first != highestMixPrice)
+                workout_plan.push_back(sort_mix[i + 1].second); // id of most expensive mix (with the smallest id)
+        }
+    }
+    if (!sort_cardio.empty()){
+        std::stable_sort(sort_cardio.begin(), sort_cardio.end());
+        workout_plan.push_back(sort_cardio.begin()->second);     //id of cheapest cardio
+    }
     return workout_plan;
 }
 

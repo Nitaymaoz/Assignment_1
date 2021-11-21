@@ -81,6 +81,16 @@ void Trainer::removeCustomer(int id) {
             deleted = true;
         }
     }
+    if (isOpen()){//only work when using MoveCustomer
+        std::vector<OrderPair> newOrderList ;
+        for (int i = 0; i < orderList.size(); ++i) {
+            if (orderList[i].first!=id) {
+                newOrderList.insert(newOrderList.begin(), orderList[i]);   // add all values to a new list - we'll maybe need to use makepair function
+                salary = salary - orderList[i].second.getPrice();             //decrease price
+            }
+        }
+        orderList=newOrderList; // using copy constructor to keep the vector
+    }
     capacity = capacity+1;
 }
 
@@ -128,6 +138,7 @@ void Trainer::closeTrainer() {
 
 int Trainer::getSalary() {
     for (int i = 0; i < orderList.size(); ++i) {
+
         salary = salary + orderList[i].first;
     }
     return salary;
