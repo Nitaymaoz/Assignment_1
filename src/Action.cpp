@@ -114,3 +114,15 @@ void Close::act(Studio &studio) {
 }
 
 
+//Class CloseAll
+
+CloseAll::CloseAll() {}
+
+void CloseAll::act(Studio &studio) {
+    for (int i = 0; i < studio.getNumOfTrainers(); ++i) {
+        Close c(i);
+        c.act(studio);
+    }
+}
+
+

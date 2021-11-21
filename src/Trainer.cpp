@@ -134,14 +134,16 @@ void Trainer::closeTrainer() {
     for(Customer* customer: customersList){
         removeCustomer(customer->getId());
     }
+    salary=salary +getSalary();
 }
 
 int Trainer::getSalary() {
+    int tempsalary=0;
     for (int i = 0; i < orderList.size(); ++i) {
 
-        salary = salary + orderList[i].first;
+        tempsalary = tempsalary + orderList[i].first;
     }
-    return salary;
+    return tempsalary+salary;
 }
 
 bool Trainer::isOpen() { return open; }
