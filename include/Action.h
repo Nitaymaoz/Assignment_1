@@ -29,7 +29,7 @@ private:
 };
 
 
-class OpenTrainer : public BaseAction {
+class OpenTrainer : public BaseAction { //maybe need rule of 5
 public:
     OpenTrainer(int id, std::vector<Customer *> &customersList);
     void act(Studio &studio);

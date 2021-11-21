@@ -57,7 +57,7 @@ Trainer &Trainer::operator=(const Trainer &other) {
             customersList.push_back(new Customer(customer->getName(),customer->getId()));
         }
         for (OrderPair pair: other.orderList) {
-            orderList.push_back(new OrderPair (pair.first,pair.second));
+            orderList.push_back(new OrderPair (pair.first,pair.second)); //check new pair
         }
     }
     return *this;
@@ -77,20 +77,10 @@ void Trainer::removeCustomer(int id) {
     bool deleted = false;
     for (int i = 0; i < customersList.size() || deleted; ++i) {
         if (customersList[i]->getId() == id) {
-            customersList.erase(customersList.begin() + i);
+            customersList.erase(customersList.begin() + i); //check if cause memory leak
             deleted = true;
         }
     }
-//    if (isOpen()){//only work when using MoveCustomer
-//        std::vector<OrderPair> newOrderList ;
-//        for (int i = 0; i < orderList.size(); ++i) {
-//            if (orderList[i].first!=id) {
-//                newOrderList.insert(newOrderList.begin(), orderList[i]);   // add all values to a new list - we'll maybe need to use makepair function
-//                salary = salary - orderList[i].second.getPrice();             //decrease price
-//            }
-//        }
-//        orderList=newOrderList; // using copy constructor to keep the vector
-//    }
     capacity = capacity+1;
 }
 
@@ -131,10 +121,13 @@ void Trainer::openTrainer() { open = true; }
 void Trainer::closeTrainer() {
     open= false;
     capacity=original_capacity;
+    salary=salary +getSalary();
     for(Customer* customer: customersList){
         removeCustomer(customer->getId());
     }
-    salary=salary +getSalary();
+    std::vector<OrderPair> newOrderList;
+    orderList=newOrderList; //using assignment operator
+
 }
 
 int Trainer::getSalary() {
