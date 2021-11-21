@@ -69,14 +69,29 @@ void MoveCustomer::act(Studio &studio) {
         error("Cannot move customer");
     }
     else {//need to fix action in order to change orderlist and salary
+        std::vector<OrderPair> orderlist = srctrainer.getOrders(); //reference type
         srctrainer.removeCustomer(id);
-//        for(OrderPair pair : srctrainer.getOrders()){
-//            if (pair.first!=id)
-//
-//        }
+        std::vector<OrderPair> newOrderList;
+        std::vector<OrderPair> removedOrders;//will only save the removed orders
+        for(OrderPair pair : orderlist){
+            if (pair.first!=id){
+                newOrderList.insert(newOrderList.begin(), pair);   // add all values to a new list - we'll maybe need to use makepair function
+            }
+            else{
+                removedOrders.push_back(pair);
+            }
+        }
+        orderlist = newOrderList; //using copy constructor
+
         if (srctrainer.getCustomers().empty())
             srctrainer.closeTrainer();
+
+        // add to the new trainer customer + orders
         dsttrainer.addCustomer(id);
+        std::vector<OrderPair> dstOrderList = dsttrainer.getOrders(); //reference type
+        for(OrderPair pair : removedOrders){
+            dstOrderList.push_back(pair);
+        }
         complete();
     }
 }
