@@ -1,13 +1,9 @@
 #include "../include/Trainer.h"
 #include "../include/Customer.h"
 
-<<<<<<< HEAD
+
 Trainer::Trainer(int t_capacity) {capacity=t_capacity; original_capacity=t_capacity; open=false;}
-=======
-Trainer::Trainer(int t_capacity) {
-    capacity = t_capacity;
-    open = false;
-}
+
 
 // Rule of 5
 //Destructor
@@ -47,7 +43,6 @@ Trainer::Trainer(const Trainer &other) {
         orderList.push_back(new OrderPair(other.orderList[i]));
     }
 }
->>>>>>> bae136f8e37df30582c4bddf5d7120d4c97431f1
 
 //Copy Assignment Operator
 Trainer &Trainer::operator=(const Trainer &other) {
@@ -74,15 +69,8 @@ Trainer &Trainer::operator=(const Trainer &other) {
 int Trainer::getCapacity() const { return capacity; }
 
 void Trainer::addCustomer(Customer *customer) {
-<<<<<<< HEAD
     capacity=capacity-1;
     customersList.insert(customersList.end(),customer) //currently holding a pointer to a RAM location - later on check if a new object is needed.
-=======
-    capacity = capacity - 1;
-    customersList.insert(customersList.end(),
-                         customer) //Currently holding a pointer to a RAM location - later on check if a new object is needed.
-    //add salary here?
->>>>>>> bae136f8e37df30582c4bddf5d7120d4c97431f1
 }
 
 void Trainer::removeCustomer(int id) {
@@ -93,12 +81,7 @@ void Trainer::removeCustomer(int id) {
             deleted = true;
         }
     }
-<<<<<<< HEAD
     capacity = capacity+1;
-=======
-    capacity = capacity + 1;
-    //minus salary here?
->>>>>>> bae136f8e37df30582c4bddf5d7120d4c97431f1
 }
 
 Customer *Trainer::getCustomer(int id) {
@@ -131,18 +114,10 @@ void Trainer::order(const int customer_id, const std::vector<int> workout_ids,
             }
         }
     }
-<<<<<<< HEAD
-=======
-    <<<<<<< HEAD
-            == == == =
-
-    >>>>>>> 4a06992405069b337a46a66a0c45a5fa099767d3
->>>>>>> bae136f8e37df30582c4bddf5d7120d4c97431f1
 }
 
 void Trainer::openTrainer() { open = true; }
 
-<<<<<<< HEAD
 void Trainer::closeTrainer() {
     open= false;
     capacity=original_capacity;
@@ -150,9 +125,6 @@ void Trainer::closeTrainer() {
         removeCustomer(customer->getId());
     }
 }
-=======
-void Trainer::closeTrainer() { open = false; }
->>>>>>> bae136f8e37df30582c4bddf5d7120d4c97431f1
 
 int Trainer::getSalary() {
     for (int i = 0; i < orderList.size(); ++i) {
