@@ -76,7 +76,8 @@ std::vector<int> FullBodyCustomer::order(const std::vector <Workout> &workout_op
         else sort_anaerobic.push_back(std::make_pair(workout.getPrice(), workout.getId()))
     }
     std::vector<int> workout_plan;
-    if (sort_cardio.empty() || sort_mix.empty() || sort_anaerobic.empty()) return workout_plan;
+    if (sort_mix.empty() && sort_cardio.empty() && sort_anaerobic.empty()) return workout_plan;
+//    if (sort_cardio.empty() || sort_mix.empty() || sort_anaerobic.empty()) return workout_plan;
 
     std::stable_sort(sort_cardio.begin(), workout_plan.end());
     std::stable_sort(sort_anaerobic.begin(), workout_plan.end());

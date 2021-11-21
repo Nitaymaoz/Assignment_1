@@ -17,6 +17,7 @@ void OpenTrainer::act(Studio &studio) {
     Trainer *trainer = studio.getTrainer(trainerId);
     if (trainer == nullptr || trainer->isOpen()) { error("Workout Session does not exist or is already open."); }
     else {
+        trainer->openTrainer(); // Opening workout session
         for (Customer *customer: customers) {
             trainer->addCustomer(customer);
             if (trainer->getCapacity() == 0) break;
@@ -25,7 +26,7 @@ void OpenTrainer::act(Studio &studio) {
     }
 }
 
-OpenTrainer::OpenTrainer(int id, std::vector<Customer *> &customersList) {
+OpenTrainer::OpenTrainer(int id, std::vector<Customer *> &customersList) { //maybe need to start the baseaction constructor as well
     trainerId = id;
     customers = customersList;
 }
@@ -38,11 +39,13 @@ void Order::act(Studio &studio) {
     Trainer *trainer = studio.getTrainer(trainerId);
     if (trainer == nullptr || trainer->isOpen()) error("Trainer does not exist or is not open");
     else {
+        //std::string orders_list = "order "+ std::to_string(trainerId)+"/n";
         std::vector <Workout> workout_options = studio.getWorkoutOptions();
         for (Customer *customer: customers) {
             std::vector<int> order = customer->order(workout_options);
-            trainer->order(customer->getId(), order, workout_options); //need to take order function of trainer from guy
-            // need to add the action string to a string which will contain all the orders and print them at the end of the loop
+            trainer->order(customer->getId(), order, workout_options);
+            //orders_list += customer->getName() + " Is Doing "+
+            // need to take the string from tostring of "order"
         }
         complete();
     }
@@ -65,12 +68,33 @@ void MoveCustomer::act(Studio &studio) {
         nullptr || dsttrainer->getCapacity() == 0) {
         error("Cannot move customer");
     }
-    else {
+    else {//need to fix action in order to change orderlist and salary
         srctrainer.removeCustomer(id);
+//        for(OrderPair pair : srctrainer.getOrders()){
+//            if (pair.first!=id)
+//
+//        }
         if (srctrainer.getCustomers().empty())
             srctrainer.closeTrainer();
         dsttrainer.addCustomer(id);
         complete();
+    }
+}
+
+// Class Close
+
+Close::Close(int id) {
+    trainerId=id;
+}
+
+void Close::act(Studio &studio) {
+    Trainer& trainer = studio.getTrainer(trainerId);
+    if (trainer== nullptr||!trainer.isOpen()){
+        error("Trainer does not exist or is not open")
+    }
+    else{
+        std::cout << trainer.getSalary() << std::endl; //This row has to be before closeTrainer because getSalary updates the trainers salary
+        trainer.closeTrainer();
     }
 }
 

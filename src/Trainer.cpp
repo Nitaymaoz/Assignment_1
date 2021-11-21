@@ -1,13 +1,13 @@
 #include "../include/Trainer.h"
+#include "../include/Customer.h"
 
-Trainer::Trainer(int t_capacity) {capacity=t_capacity; open=false;}
+Trainer::Trainer(int t_capacity) {capacity=t_capacity; original_capacity=t_capacity; open=false;}
 
 int Trainer::getCapacity() const {return capacity;}
 
 void Trainer::addCustomer(Customer *customer) {
     capacity=capacity-1;
     customersList.insert(customersList.end(),customer) //currently holding a pointer to a RAM location - later on check if a new object is needed.
-    //add salary here?
 }
 
 void Trainer::removeCustomer(int id) {
@@ -19,7 +19,6 @@ void Trainer::removeCustomer(int id) {
         }
     }
     capacity = capacity+1;
-    //minus salary here?
 }
 
 Customer *Trainer::getCustomer(int id) {
@@ -49,18 +48,19 @@ void Trainer::order(const int customer_id, const std::vector<int> workout_ids,
             }
         }
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> 4a06992405069b337a46a66a0c45a5fa099767d3
 }
 
 void Trainer::openTrainer() {open= true;}
 
-void Trainer::closeTrainer() {open= false;}
+void Trainer::closeTrainer() {
+    open= false;
+    capacity=original_capacity;
+    for(Customer* customer: customersList){
+        removeCustomer(customer->getId());
+    }
+}
 
 int Trainer::getSalary() {
-    int salary = 0;
     for (int i = 0; i < orderList.size(); ++i) {
         salary = salary + orderList[i].first;
     }
