@@ -18,14 +18,6 @@ virtual Trainer::~Trainer(){
         }
     }
 
-    if (orderList) {
-        for(OrderPair pair: orderList){
-            if(pair != nullptr){
-                delete pair;
-                pair = nullptr;
-            }
-        }
-    }
     customersList.clear()
     orderList.clear()
 }
