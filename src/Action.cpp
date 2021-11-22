@@ -237,3 +237,37 @@ std::string PrintActionsLog::toString() const {
     return "log";
 }
 
+
+//Class BackupStudio
+
+BackupStudio::BackupStudio() {}
+
+std::string BackupStudio::toString() const {
+    return "backup";
+}
+
+void BackupStudio::act(Studio &studio) {
+    backup = studio; //assignment operator
+    addToLog(toString());
+}
+
+//Class RestoreStudio
+
+RestoreStudio::RestoreStudio() {}
+
+std::string RestoreStudio::toString() const {
+    return "restore";
+}
+
+void RestoreStudio::act(Studio &studio) {
+    if (backup== nullptr)
+        error("No backup available");
+    else{
+        studio=backup; //move assignment
+    }
+    if(getStatus()==COMPLETED)
+        addToLog(toString() + " Completed");
+    else addtolog(toString() + " Error: "+ getErrorMsg());
+}
+
+
