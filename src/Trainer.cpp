@@ -18,8 +18,8 @@ virtual Trainer::~Trainer(){
         }
     }
 
-    customersList.clear()
-    orderList.clear()
+    customersList.clear();
+    orderList.clear();
 }
 
 // Copy Constructor
@@ -29,7 +29,7 @@ Trainer::Trainer(const Trainer &other) {
     customersList = new std::vector<Customer *>;
     orderList = new std::vector<OrderPair>;
     for (int i = 0; i < other.customersList.size(); ++i) {
-        customersList.push_back(new Customer(other.customersList[i]));
+        customersList.push_back(new Customer(other.customersList[i])); ////Check if Works
     }
     for (int i = 0; i < other.orderList.size(); ++i) {
         orderList.push_back(new OrderPair(other.orderList[i]));
