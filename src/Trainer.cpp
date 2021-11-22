@@ -62,7 +62,31 @@ Trainer &Trainer::operator=(const Trainer &other) {
     }
     return *this;
 }
+// Move Constructor
+Trainer::Trainer(Trainer&& other) {
+    capacity = other.capacity;
+    open = other.open;
+    customersList = other.customersList;
+    orderList = other.orderList;
+    other.customersList = nullptr;
+    other.orderList = nullptr;
+}
 
+// Move Assignment operator
+const Trainer &Trainer::operator=(Trainer &&other) {
+    if (this != &other) {
+
+        if (customersList) customersList.clear();
+        if (orderList) orderList.clear();
+        capacity = other.capacity;
+        open = other.open;
+        customersList = other.customersList;
+        orderList = other.orderList;
+        other.customersList = nullptr;
+        other.orderList = nullptr;
+    }
+    return *this;
+}
 
 
 

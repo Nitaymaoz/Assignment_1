@@ -13,6 +13,8 @@ public:
     ~Trainer() // Destructor
     Trainer(const Trainer& other); // Copy Constructor
     Trainer& operator= (const Trainer &other); // Copy Assignment Operator
+    Trainer(Trainer&& other); // Move Constructor
+    const Trainer& operator=(Trainer&& other); // Move Assignment Operator
     int getCapacity() const;
     void addCustomer(Customer* customer);
     void removeCustomer(int id);
