@@ -230,5 +230,10 @@ PrintActionsLog::PrintActionsLog() {}
 
 void PrintActionsLog::act(Studio &studio) {
     std::cout << getLog() << std::endl;
+    addToLog(toString());
+}
+
+std::string PrintActionsLog::toString() const {
+    return "log";
 }
 
