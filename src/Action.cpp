@@ -2,12 +2,21 @@
 #include "../include/Action.h"
 //BaseAction functions
 
+
 void BaseAction::complete() { status = COMPLETED; }
 
 void BaseAction::error(std::string errorMsg) {
     this->errorMsg = errorMsg;
     status = ERROR;
     std::cout << errorMsg << std::endl;
+}
+
+ActionStatus BaseAction::getStatus() const {
+    return status;
+}
+
+void BaseAction::addtolog(std::string action) {
+    log +=action;
 }
 
 
@@ -37,6 +46,7 @@ std::string OpenTrainer::toString() const {
     for(Customer* customer: customers){
         tostring += " " + customer->toString() ;
     }
+    return tostring;
 }
 
 //Order functions
@@ -57,6 +67,10 @@ void Order::act(Studio &studio) {
         }
         complete();
     }
+}
+
+std::string Order::toString() const {
+    return ("order "+ trainerId);
 }
 
 
@@ -103,6 +117,10 @@ void MoveCustomer::act(Studio &studio) {
     }
 }
 
+std::string MoveCustomer::toString() const {
+    return ("move "+ toString(srcTrainer) +" "+toString(dstTrainer) + " " +toString(id));
+}
+
 // Class Close
 
 Close::Close(int id) {
@@ -117,8 +135,14 @@ void Close::act(Studio &studio) {
         std::cout << trainer.getSalary()
                   << std::endl; //This row has to be before closeTrainer because getSalary updates the trainers salary
         trainer.closeTrainer();
+        complete();
     }
 }
+
+std::string Close::toString() const {
+    return ("close "+ std::to_string(trainerId));
+}
+
 
 
 //Class CloseAll
@@ -132,18 +156,22 @@ void CloseAll::act(Studio &studio) {
         Close c(i);
         c.act(studio);
     }
+    complete();
+}
+
+std::string CloseAll::toString() const {
+    return "closeall";
 }
 
 //Class PrintWorkoutOptions
 
-PrintWorkoutOptions::PrintWorkoutOptions() {
-
-}
+PrintWorkoutOptions::PrintWorkoutOptions() {}
 
 void PrintWorkoutOptions::act(Studio &studio) {
     for (Workout workout: studio.getWorkoutOptions()) {
         std::cout << workout.getName() + ", " + workout.getType() + ", " + std::to_string(workout.getPrice()) << std::endl();
     }
+    complete();
 }
 
 std::string PrintWorkoutOptions::toString() const {
@@ -176,6 +204,7 @@ void PrintTrainerStatus::act(Studio &studio) {
             std::cout << pair.second.getName() + " " + std::to_string(pair.second.getPrice()) + "NIS " + std::to_string(pair.first) << std::endl;
         }
     }
+    complete();
 }
 
 //Class PrintActionslog

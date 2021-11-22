@@ -19,6 +19,7 @@ public:
     ActionStatus getStatus() const;
     virtual void act(Studio& studio)=0;
     virtual std::string toString() const=0;
+    void addtolog(std::string action); //add action tostring to log
 protected:
     void complete();
     void error(std::string errorMsg);
@@ -26,6 +27,7 @@ protected:
 private:
     std::string errorMsg;
     ActionStatus status;
+    string log;
 };
 
 
