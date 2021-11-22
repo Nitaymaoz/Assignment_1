@@ -32,6 +32,13 @@ OpenTrainer::OpenTrainer(int id,
     customers = customersList;
 }
 
+std::string OpenTrainer::toString() const {
+    std::string tostring = "open "+ std::to_string(trainerId);
+    for(Customer* customer: customers){
+        tostring += " " + customer->toString() ;
+    }
+}
+
 //Order functions
 
 Order::Order(int id) { trainerId = id; }

@@ -26,6 +26,10 @@ std::vector<int> SweatyCustomer::order(const std::vector <Workout> &workout_opti
     return workout_plan;
 }
 
+std::string SweatyCustomer::toString() const {
+    return (getName()+ "," + "swt");
+}
+
 //Cheap Customer
 
 std::vector<int> CheapCustomer::order(const std::vector <Workout> &workout_options) {
@@ -42,6 +46,10 @@ std::vector<int> CheapCustomer::order(const std::vector <Workout> &workout_optio
     workout_plan.push_back(minId);
 
     return workout_plan;
+}
+
+std::string CheapCustomer::toString() const {
+    return (getName()+ "," + "chp");
 }
 
 //Heavy Muscle Customer
@@ -61,6 +69,10 @@ std::vector<int> HeavyMuscleCustomer::order(const std::vector <Workout> &workout
         workout_plan_output.push_back(workout.second);
     }
     return workout_plan_output;
+}
+
+std::string HeavyMuscleCustomer::toString() const {
+    return (getName()+ "," + "mcl");
 }
 
 
@@ -96,6 +108,10 @@ std::vector<int> FullBodyCustomer::order(const std::vector <Workout> &workout_op
         workout_plan.push_back(sort_cardio.begin()->second);     //id of cheapest cardio
     }
     return workout_plan;
+}
+
+std::string FullBodyCustomer::toString() const {
+    return (getName()+ "," + "fbd");
 }
 
 
