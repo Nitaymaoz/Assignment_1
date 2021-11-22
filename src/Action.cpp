@@ -16,7 +16,11 @@ ActionStatus BaseAction::getStatus() const {
 }
 
 void BaseAction::addtolog(std::string action) {
-    log +=action;
+    log +=action + "\n";
+}
+
+std::string BaseAction::getLog() {
+    return log;
 }
 
 
@@ -33,6 +37,9 @@ void OpenTrainer::act(Studio &studio) {
         }
         complete();
     }
+    if(getStatus()==COMPLETED)
+        addToLog(toString() + " Completed");
+    else addtolog(toString() + " Error: "+ getErrorMsg());
 }
 
 OpenTrainer::OpenTrainer(int id,
@@ -67,6 +74,9 @@ void Order::act(Studio &studio) {
         }
         complete();
     }
+    if(getStatus()==COMPLETED)
+        addToLog(toString() + " Completed");
+    else addtolog(toString() + " Error: "+ getErrorMsg());
 }
 
 std::string Order::toString() const {
@@ -115,6 +125,9 @@ void MoveCustomer::act(Studio &studio) {
         }
         complete();
     }
+    if(getStatus()==COMPLETED)
+        addToLog(toString() + " Completed");
+    else addtolog(toString() + " Error: "+ getErrorMsg());
 }
 
 std::string MoveCustomer::toString() const {
@@ -137,6 +150,7 @@ void Close::act(Studio &studio) {
         trainer.closeTrainer();
         complete();
     }
+    addToLog(toString() + " Completed");
 }
 
 std::string Close::toString() const {
@@ -157,6 +171,7 @@ void CloseAll::act(Studio &studio) {
         c.act(studio);
     }
     complete();
+    addToLog(toString() + " Completed");
 }
 
 std::string CloseAll::toString() const {
@@ -172,6 +187,7 @@ void PrintWorkoutOptions::act(Studio &studio) {
         std::cout << workout.getName() + ", " + workout.getType() + ", " + std::to_string(workout.getPrice()) << std::endl();
     }
     complete();
+    addToLog(toString() + " Completed");
 }
 
 std::string PrintWorkoutOptions::toString() const {
@@ -205,6 +221,7 @@ void PrintTrainerStatus::act(Studio &studio) {
         }
     }
     complete();
+    addToLog(toString() + " Completed");
 }
 
 //Class PrintActionslog
@@ -212,6 +229,6 @@ void PrintTrainerStatus::act(Studio &studio) {
 PrintActionsLog::PrintActionsLog() {}
 
 void PrintActionsLog::act(Studio &studio) {
-
+    std::cout << getLog() << std::endl;
 }
 
