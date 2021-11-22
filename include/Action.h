@@ -6,6 +6,8 @@
 #include "Customer.h"
 #include "Studio.h"
 
+extern Studio* backup;
+
 enum ActionStatus{
     COMPLETED, ERROR
 };
@@ -19,6 +21,8 @@ public:
     ActionStatus getStatus() const;
     virtual void act(Studio& studio)=0;
     virtual std::string toString() const=0;
+    void addToLog(std::string action); //add action tostring to log
+    std::string getLog(); //return current log
 protected:
     void complete();
     void error(std::string errorMsg);
@@ -26,10 +30,11 @@ protected:
 private:
     std::string errorMsg;
     ActionStatus status;
+    string log;
 };
 
 
-class OpenTrainer : public BaseAction {
+class OpenTrainer : public BaseAction { //maybe need rule of 5
 public:
     OpenTrainer(int id, std::vector<Customer *> &customersList);
     void act(Studio &studio);
