@@ -10,7 +10,7 @@ typedef std::pair<int, Workout> OrderPair;
 class Trainer{
 public:
     Trainer(int t_capacity);
-    ~Trainer() // Destructor
+    ~Trainer(); // Destructor
     Trainer(const Trainer& other); // Copy Constructor
     Trainer& operator= (const Trainer &other); // Copy Assignment Operator
     Trainer(Trainer&& other); // Move Constructor

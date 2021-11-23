@@ -30,14 +30,14 @@ protected:
 private:
     std::string errorMsg;
     ActionStatus status;
-    string log;
+    std::string log;
 };
 
 
 class OpenTrainer : public BaseAction { //maybe need rule of 5
 public:
     OpenTrainer(int id, std::vector<Customer *> &customersList);
-    ~OpenTrainer() // Destructor
+    ~OpenTrainer(); // Destructor
     OpenTrainer(const OpenTrainer& other); // Copy Constructor
     OpenTrainer& operator= (const OpenTrainer &other); // Copy Assignment Operator
     OpenTrainer(OpenTrainer&& other); // Move Constructor

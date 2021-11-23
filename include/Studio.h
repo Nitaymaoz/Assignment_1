@@ -12,7 +12,7 @@ class Studio{
 public:
 	Studio();
     Studio(const std::string &configFilePath);
-    ~Studio() // Destructor
+    ~Studio(); // Destructor
     Studio(const Studio& other); // Copy Constructor
     Studio& operator= (const Studio &other); // Copy Assignment Operator
     Studio(Studio&& other); // Move Constructor
