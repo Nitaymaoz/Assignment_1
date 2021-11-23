@@ -321,7 +321,8 @@ void RestoreStudio::act(Studio &studio) {
     if (backup== nullptr)
         error("No backup available");
     else{
-        studio=backup; //move assignment
+        Studio copystudio(backup);//copy constructor
+        studio=copystudio; //move assignment
     }
     if(getStatus()==COMPLETED)
         addToLog(toString() + " Completed");
