@@ -176,11 +176,9 @@ Studio::~Studio() {
 }
 
 //Copy Constructor
-Studio::Studio(const Studio &other) {
-    open = other.open;
-    workout_options = other.workout_options;
-    trainers = new std::vector<Trainer *>;
-    actionsLog = new std::vector<BaseAction *>;
+Studio::Studio(const Studio &other) : open(other.open), trainers(), workout_options(other.workout_options),
+                                      actionsLog() {
+
     for (int i = 0; i < other.trainers.size(); ++i) {
         trainers.push_back(new Trainer(other.trainers[i])); //Check if Works
     }
