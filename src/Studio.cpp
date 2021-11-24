@@ -59,9 +59,6 @@ Studio::Studio(const std::string &configFilePath) {
                 workoutIds++;
             }
 
-            if (counter == 1) {
-                continue;
-            }
 
         }
     }
