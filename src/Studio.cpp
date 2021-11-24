@@ -2,7 +2,7 @@
 #include <fstream>
 #include <algorithm>
 
-Studio::Studio(const std::string &configFilePath) {
+Studio::Studio(const std::string &configFilePath) { // **Check if needs to throw exceptions**
     std::ifstream configFile("ExampleInput.txt");
     if (configFile.is_open()) {
         std::string line;
@@ -22,7 +22,7 @@ Studio::Studio(const std::string &configFilePath) {
                 line.erase(std::remove_if(line.begin(), line.end(), isspace()), line.end());
                 std::string trainerCapacity;
                 for (int i = 0; i < line.size(); ++i) {
-                    if (line[i] != ',') trainerCapacity.push_back(line[i])
+                    if (line[i] != ',') trainerCapacity.push_back(line[i]);
                     else {
                         trainers.push_back(new Trainer(std::stoi(trainerCapacity)));
                         trainerCapacity.clear;
@@ -33,7 +33,7 @@ Studio::Studio(const std::string &configFilePath) {
             if (counter == 3){
                 line.erase(std::remove_if(line.begin(), line.end(), isspace()), line.end());
                 std::vector<int> commaIndexes;
-                int j = 0;
+                int j = 0; // counts the commas
                 for (int i = 0; i < line.size() && j < 2; ++i) {
                     if (line[i] == ','){
                         commaIndexes.push_back(i);
