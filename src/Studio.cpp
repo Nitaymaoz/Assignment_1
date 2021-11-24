@@ -22,7 +22,7 @@ Studio::Studio(const std::string &configFilePath) {
                 line.erase(std::remove_if(line.begin(), line.end(), isspace()), line.end());
                 std::string trainerCapacity;
                 for (int i = 0; i < line.size(); ++i) {
-                    if (line[i] != ',') trainerCapacity.push_back(line[i])
+                    if (line[i] != ',') trainerCapacity.push_back(line[i]);
                     else {
                         trainers.push_back(new Trainer(std::stoi(trainerCapacity)));
                         trainerCapacity.clear;
@@ -68,8 +68,11 @@ Studio::Studio(const std::string &configFilePath) {
 }
 
 void Studio::start() {
+    open= true;
     std::cout << "Studio is now open!"std
     ::endl;
+    while()
+
 }
 
 //Rule of 5
@@ -163,3 +166,5 @@ Trainer *Studio::getTrainer(int tid) { return trainers[tid]; } //what happens if
 const std::vector<BaseAction *> &Studio::getActionsLog() const { return &actionsLog; }
 
 std::vector <Workout> &Studio::getWorkoutOptions() { return &workout_options; }
+
+void Studio::setOpen(bool state) {open=state;}

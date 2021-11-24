@@ -228,6 +228,7 @@ void CloseAll::act(Studio &studio) {
         Close c(i);
         c.act(studio);
     }
+    studio.
     complete();
     addToLog(toString() + " Completed");
 }
