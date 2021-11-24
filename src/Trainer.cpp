@@ -29,7 +29,7 @@ Trainer::Trainer(const Trainer &other) {
     customersList = new std::vector<Customer *>;
     orderList = new std::vector<OrderPair>;
     for (int i = 0; i < other.customersList.size(); ++i) {
-        customersList.push_back(new Customer(other.customersList[i]->clone())); ////Added clone function check if works
+        customersList.push_back(new *Customer(other.customersList[i]->clone())); ////Added clone function check if works
     }
     for (int i = 0; i < other.orderList.size(); ++i) {
         orderList.push_back(new OrderPair(other.orderList[i]));

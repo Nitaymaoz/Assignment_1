@@ -78,7 +78,7 @@ void Studio::start() {
                 input.erase(0, 5);
                 std::string trainerid = input.substr(0, input.find(" "));
                 input.erase(0, input.find(" ") + 1);
-                std::vector <Customer> customerList;
+                std::vector <Customer*> customerList;
                 int capacity = trainers[std::stoi(trainerid)]->getCapacity();
                 int trainercounter = 0;
                 while (!input.empty() || capacity > trainercounter) {

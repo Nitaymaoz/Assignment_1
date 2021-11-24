@@ -20,13 +20,13 @@ Customer &Customer::makeNewCustomer(std::string input, int id) {
     std::string type = input.substr(input.find(",") + 1, 3);
     switch (type) {
         case "swt":
-            return SweatyCustomer(name, id);
+            return new SweatyCustomer(name, id);
         case "chp":
-            return CheapCustomer(name, id);
+            return new CheapCustomer(name, id);
         case "mcl":
-            return HeavyMuscleCustomer(name, id);
+            return new HeavyMuscleCustomer(name, id);
         case "fbd":
-            return FullBodyCustomer(name, id);
+            return new FullBodyCustomer(name, id);
     }
 }
 
@@ -47,9 +47,10 @@ std::string SweatyCustomer::toString() const {
     return (getName() + "," + "swt");
 }
 
-Customer SweatyCustomer::clone() {
-    return this;
+Customer *SweatyCustomer::clone() {
+    return new SweatyCustomer(*this);
 }
+
 
 //Cheap Customer
 
@@ -73,9 +74,10 @@ std::string CheapCustomer::toString() const {
     return (getName() + "," + "chp");
 }
 
-Customer CheapCustomer::clone() {
-    return this;
+Customer *CheapCustomer::clone() {
+    return new CheapCustomer(*this);
 }
+
 
 //Heavy Muscle Customer
 
@@ -100,8 +102,8 @@ std::string HeavyMuscleCustomer::toString() const {
     return (getName() + "," + "mcl");
 }
 
-Customer HeavyMuscleCustomer::clone() {
-    return this;
+Customer *HeavyMuscleCustomer::clone() {
+    return new HeavyMuscleCustomer(*this);
 }
 
 
@@ -144,8 +146,8 @@ std::string FullBodyCustomer::toString() const {
     return (getName() + "," + "fbd");
 }
 
-Customer FullBodyCustomer::clone() {
-    return this;
+Customer *FullBodyCustomer::clone() {
+    return new FullBodyCustomer(*this);
 }
 
 
