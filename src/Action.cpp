@@ -30,11 +30,11 @@ std::string BaseAction::getLog() {
 
 //Destructor
 OpenTrainer::~OpenTrainer() {
-    if (customers){
+    if (!customers.empty()){
         for(Customer *customer: customers){
-            if(*customer != nullptr){
-                delete *customer;
-                *customer = nullptr;
+            if(customer != nullptr){
+                delete customer;
+                customer = nullptr;
             }
         }
     }
@@ -43,7 +43,7 @@ OpenTrainer::~OpenTrainer() {
 //Copy Constructor
 OpenTrainer::OpenTrainer(const OpenTrainer& other){
     trainerId = other.trainerId;
-    customers = new std::vector<Customer *>;
+    std::vector<Customer *> customers;
     for (int i = 0; i < other.customers.size(); ++i) {
         customers.push_back(new Customer(other.customers[i]));
     }
@@ -76,7 +76,7 @@ OpenTrainer::OpenTrainer(OpenTrainer &&other) {
 const OpenTrainer &OpenTrainer::operator=(OpenTrainer &&other) {
     if (this != &other) {
 
-        if (customers) customers.clear();
+        if (!customers.empty()) customers.clear();
         trainerId = other.trainerId;
         customers = other.customers;
         other.customersList = nullptr;
@@ -123,18 +123,13 @@ void Order::act(Studio &studio) {
     Trainer *trainer = studio.getTrainer(trainerId);
     if (trainer == nullptr || trainer->isOpen()) error("Trainer does not exist or is not open");
     else {
-        std::string orders_list ;
         std::vector <Workout> workout_options = studio.getWorkoutOptions();
-        int counter =0;
         for (Customer *customer: trainer->getCustomers()) {
-            std::vector<int> order = customer->order(   workout_options);
-            trainer->order(customer->getId(), order, workout_options);
+            std::vector<int> order = customer->order(workout_options);
+            trainer->order(customer->getId(), order,workout_options);
             for (int i = 0; i < order.size(); ++i) {
                 std::cout << customer->getName() + " Is Doing " + studio.getWorkOutName(order[i]);
             }
-        }
-        for(OrderPair pair:trainer->getOrders()){
-            std::cout <<
         }
         complete();
     }
@@ -150,11 +145,7 @@ std::string Order::toString() const {
 
 //MoveCustomer functions
 
-MoveCustomer::MoveCustomer(int src, int dst, int customerId) {
-    srcTrainer = src;
-    dstTrainer = dst;
-    id = customerId;
-}
+MoveCustomer::MoveCustomer(int src, int dst, int customerId):srcTrainer(src) ,dstTrainer(dst) , id(customerId) {}
 
 void MoveCustomer::act(Studio &studio) {
     Trainer &srctrainer = studio.getTrainer(srcTrainer); //check if reference work
@@ -249,7 +240,7 @@ PrintWorkoutOptions::PrintWorkoutOptions() {}
 
 void PrintWorkoutOptions::act(Studio &studio) {
     for (Workout workout: studio.getWorkoutOptions()) {
-        std::cout << workout.getName() + ", " + workout.getType() + ", " + std::to_string(workout.getPrice()) << std::endl();
+        std::cout << workout.getName() + ", " + workout.workOutTypeToString() + ", " + std::to_string(workout.getPrice()) << std::endl();
     }
     complete();
     addToLog(toString() + " Completed");
