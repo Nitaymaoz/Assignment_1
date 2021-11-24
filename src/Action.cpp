@@ -125,7 +125,7 @@ void Order::act(Studio &studio) {
         //std::string orders_list = "order "+ std::to_string(trainerId)+"/n";
         std::vector <Workout> workout_options = studio.getWorkoutOptions();
         for (Customer *customer: trainer->getCustomers()) {
-            std::vector<int> order = customer->order(workout_options);
+            std::vector<int> order = customer->order(   workout_options);
             trainer->order(customer->getId(), order, workout_options);
             //orders_list += customer->getName() + " Is Doing "+
             // need to take the string from tostring of "order"
