@@ -4,7 +4,7 @@
 
 //Customer Functions
 
-Customer::Customer(std::string c_name, int c_id) :name(c_name),id(c_id) {}
+Customer::Customer(std::string c_name, int c_id) : name(c_name), id(c_id) {}
 
 std::string Customer::getName() const { return name; }
 
@@ -13,6 +13,23 @@ int Customer::getId() const { return id; }
 std::vector<int> Customer::order(const std::vector <Workout> &workout_options) {}
 
 std::string Customer::toString() const {}
+
+Customer &Customer::makeNewCustomer(std::string input, int id) {
+    std::string customer = input.substr(0, input.find(" "));
+    std::string name = input.substr(0, input.find(","));
+    std::string type = input.substr(input.find(",") + 1, 3);
+    switch (type) {
+        case "swt":
+            return SweatyCustomer(name, id);
+        case "chp":
+            return CheapCustomer(name, id);
+        case "mcl":
+            return HeavyMuscleCustomer(name, id);
+        case "fbd":
+            return FullBodyCustomer(name, id);
+    }
+}
+
 
 //SweatyCustomer
 
@@ -27,7 +44,7 @@ std::vector<int> SweatyCustomer::order(const std::vector <Workout> &workout_opti
 }
 
 std::string SweatyCustomer::toString() const {
-    return (getName()+ "," + "swt");
+    return (getName() + "," + "swt");
 }
 
 Customer SweatyCustomer::clone() {
@@ -53,7 +70,7 @@ std::vector<int> CheapCustomer::order(const std::vector <Workout> &workout_optio
 }
 
 std::string CheapCustomer::toString() const {
-    return (getName()+ "," + "chp");
+    return (getName() + "," + "chp");
 }
 
 Customer CheapCustomer::clone() {
@@ -80,7 +97,7 @@ std::vector<int> HeavyMuscleCustomer::order(const std::vector <Workout> &workout
 }
 
 std::string HeavyMuscleCustomer::toString() const {
-    return (getName()+ "," + "mcl");
+    return (getName() + "," + "mcl");
 }
 
 Customer HeavyMuscleCustomer::clone() {
@@ -102,12 +119,12 @@ std::vector<int> FullBodyCustomer::order(const std::vector <Workout> &workout_op
     std::vector<int> workout_plan;
     if (sort_mix.empty() && sort_cardio.empty() && sort_anaerobic.empty()) return workout_plan;
 
-    if (!sort_anaerobic.empty()){
+    if (!sort_anaerobic.empty()) {
         std::stable_sort(sort_anaerobic.begin(), sort_anaerobic.end());
         workout_plan.push_back(sort_anaerobic.begin()->second);  // id of the cheapest anaerobic
     }
 
-    if (!sort_mix.empty()){
+    if (!sort_mix.empty()) {
         std::stable_sort(sort_mix.begin(), sort_mix.end());
         int highestMixPrice = sort_mix.end()->second;
         for (int i = sort_mix.size() - 2; i >= 0; i--) {
@@ -115,7 +132,7 @@ std::vector<int> FullBodyCustomer::order(const std::vector <Workout> &workout_op
                 workout_plan.push_back(sort_mix[i + 1].second); // id of most expensive mix (with the smallest id)
         }
     }
-    if (!sort_cardio.empty()){
+    if (!sort_cardio.empty()) {
         std::stable_sort(sort_cardio.begin(), sort_cardio.end());
         workout_plan.push_back(sort_cardio.begin()->second);     //id of cheapest cardio
     }
@@ -123,9 +140,8 @@ std::vector<int> FullBodyCustomer::order(const std::vector <Workout> &workout_op
 }
 
 
-
 std::string FullBodyCustomer::toString() const {
-    return (getName()+ "," + "fbd");
+    return (getName() + "," + "fbd");
 }
 
 Customer FullBodyCustomer::clone() {
