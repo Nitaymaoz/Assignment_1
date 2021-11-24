@@ -91,7 +91,7 @@ void OpenTrainer::act(Studio &studio) {
         trainer->openTrainer(); // Opening workout session
         for (Customer *customer: customers) {
             trainer->addCustomer(customer);
-            if (trainer->getCapacity() == 0) break;
+            if (trainer->getCapacity() == 0) break; // not necessary
         }
         complete();
     }
@@ -102,6 +102,7 @@ void OpenTrainer::act(Studio &studio) {
 
 OpenTrainer::OpenTrainer(int id,
                          std::vector<Customer *> &customersList) { //maybe need to start the baseaction constructor as well
+    BaseAction::BaseAction()
     trainerId = id;
     customers = customersList;
 }
@@ -122,13 +123,18 @@ void Order::act(Studio &studio) {
     Trainer *trainer = studio.getTrainer(trainerId);
     if (trainer == nullptr || trainer->isOpen()) error("Trainer does not exist or is not open");
     else {
-        //std::string orders_list = "order "+ std::to_string(trainerId)+"/n";
+        std::string orders_list ;
         std::vector <Workout> workout_options = studio.getWorkoutOptions();
+        int counter =0;
         for (Customer *customer: trainer->getCustomers()) {
             std::vector<int> order = customer->order(workout_options);
             trainer->order(customer->getId(), order, workout_options);
-            //orders_list += customer->getName() + " Is Doing "+
-            // need to take the string from tostring of "order"
+            for (int i = 0; i < order.size(); ++i) {
+                std::cout << customer->getName() + " Is Doing " + studio.getWorkOutName(order[i]);
+            }
+        }
+        for(OrderPair pair:trainer->getOrders()){
+            std::cout <<
         }
         complete();
     }
@@ -228,7 +234,7 @@ void CloseAll::act(Studio &studio) {
         Close c(i);
         c.act(studio);
     }
-    studio.
+    studio.setOpen(false);
     complete();
     addToLog(toString() + " Completed");
 }

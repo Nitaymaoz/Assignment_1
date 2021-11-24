@@ -66,9 +66,47 @@ Studio::Studio(const std::string &configFilePath) { // **Check if needs to throw
 
 void Studio::start() {
     open= true;
-    std::cout << "Studio is now open!"std
-    ::endl;
-    while()
+    int customerid =0;
+    std::cout << "Studio is now open!"std::endl;
+    while(open){
+        std::string input;
+        std::cin >> input;
+        std::string action = input.substr(0,input.find(" "));
+        switch (action) {
+            case "open":
+                input.erase(0,5);
+                std::string trainerid=input.substr(0,input.find(" "));
+                input.erase(0,input.find(" ")+1);
+                std::vector<Customer> customerList;
+                int capacity =trainers[std::stoi(trainerid)]->getCapacity();
+                int trainercounter=0;
+                while (!input.empty() || capacity>trainercounter){
+                    customerList.push_back(Customer::makeNewCustomer(input,customerid));
+                    trainercounter++;
+                    customerid++;
+                    input.erase(0,input.find(" ")+1);
+                }
+                OpenTrainer::OpenTrainer(trainerid,customerList).act(this);
+            case "order":
+                std::string trainerid=input.substr(6,std::string::npos);
+                Order::Order(std::stoi(trainerid)).act(this);
+            case "move":
+
+            case "close":
+
+            case "closeall":
+
+            case "workout_options":
+
+            case "status":
+
+            case "log":
+
+            case "backup":
+
+            case "restore":
+        }
+    }
 
 }
 
@@ -165,3 +203,9 @@ const std::vector<BaseAction *>& getActionsLog() const { return &actionsLog; }
 std::vector <Workout> &Studio::getWorkoutOptions() { return &workout_options; }
 
 void Studio::setOpen(bool state) {open=state;}
+
+std::string Studio::getWorkOutName(int workoutid) {
+    for(Workout workout : workout_options){
+        if(workout.getId()==workoutid) return workout.getName();
+    }
+}

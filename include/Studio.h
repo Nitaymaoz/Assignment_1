@@ -23,6 +23,7 @@ public:
 	const std::vector<BaseAction*>& getActionsLog() const; // Return a reference to the history of actions
     std::vector<Workout>& getWorkoutOptions();
     void setOpen(bool state); //Set open field
+    std::string getWorkOutName(int workoutid);
 
 private:
     bool open;
