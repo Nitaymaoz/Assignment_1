@@ -15,7 +15,7 @@ ActionStatus BaseAction::getStatus() const {
     return status;
 }
 
-void BaseAction::addtolog(std::string action) {
+void BaseAction::addToLog(std::string action) {
     log +=action + "\n";
 }
 
@@ -29,7 +29,7 @@ std::string BaseAction::getLog() {
 //Rule of 5
 
 //Destructor
-virtual OpenTrainer::~OpenTrainer() {
+OpenTrainer::~OpenTrainer() {
     if (customers){
         for(Customer *customer: customers){
             if(*customer != nullptr){
@@ -97,7 +97,7 @@ void OpenTrainer::act(Studio &studio) {
     }
     if(getStatus()==COMPLETED)
         addToLog(toString() + " Completed");
-    else addtolog(toString() + " Error: "+ getErrorMsg());
+    else addToLog(toString() + " Error: "+ getErrorMsg());
 }
 
 OpenTrainer::OpenTrainer(int id,
@@ -140,7 +140,7 @@ void Order::act(Studio &studio) {
     }
     if(getStatus()==COMPLETED)
         addToLog(toString() + " Completed");
-    else addtolog(toString() + " Error: "+ getErrorMsg());
+    else addToLog(toString() + " Error: "+ getErrorMsg());
 }
 
 std::string Order::toString() const {
@@ -170,8 +170,8 @@ void MoveCustomer::act(Studio &studio) {
         std::vector <OrderPair> removedOrders;//will only save the removed orders
         for (OrderPair pair: orderlist) {
             if (pair.first != id) {
-                newOrderList.insert(newOrderList.begin(),
-                                    pair);   // add all values to a new list - we'll maybe need to use makepair function
+                newOrderList.insert(std::make_pair(newOrderList.begin(),
+                                    pair));   // add all values to a new list - we'll maybe need to use makepair function
             } else {
                 removedOrders.push_back(pair);
             }
@@ -191,7 +191,7 @@ void MoveCustomer::act(Studio &studio) {
     }
     if(getStatus()==COMPLETED)
         addToLog(toString() + " Completed");
-    else addtolog(toString() + " Error: "+ getErrorMsg());
+    else addToLog(toString() + " Error: "+ getErrorMsg());
 }
 
 std::string MoveCustomer::toString() const {
@@ -207,7 +207,7 @@ Close::Close(int id) {
 void Close::act(Studio &studio) {
     Trainer &trainer = studio.getTrainer(trainerId);
     if (trainer == nullptr || !trainer.isOpen()) {
-        error("Trainer does not exist or is not open")
+        error("Trainer does not exist or is not open");
     } else {
         std::cout << "Trainer " + std::to_string(trainerId)+ " closed. Salary "+ trainer.getSalary()+"NIS\n"
                   << std::endl; //This row has to be before closeTrainer because getSalary updates the trainers salary
@@ -333,7 +333,7 @@ void RestoreStudio::act(Studio &studio) {
     }
     if(getStatus()==COMPLETED)
         addToLog(toString() + " Completed");
-    else addtolog(toString() + " Error: "+ getErrorMsg());
+    else addToLog(toString() + " Error: "+ getErrorMsg());
 }
 
 

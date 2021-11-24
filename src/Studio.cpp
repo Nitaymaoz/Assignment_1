@@ -30,20 +30,20 @@ Studio::Studio(const std::string &configFilePath) { // **Check if needs to throw
                 }
             }
 
-            if (counter == 3){
+            if (counter == 3) {
                 line.erase(std::remove_if(line.begin(), line.end(), isspace()), line.end());
                 std::vector<int> commaIndexes;
                 int j = 0; // counts the commas
                 for (int i = 0; i < line.size() && j < 2; ++i) {
-                    if (line[i] == ','){
+                    if (line[i] == ',') {
                         commaIndexes.push_back(i);
                         j++;
                     }
                 }
-                std::string name = line.substr(0,commaIndexes[0]);
-                int price = std::stoi(line.substr(commaIndexes[1]+1,std::string::npos));
+                std::string name = line.substr(0, commaIndexes[0]);
+                int price = std::stoi(line.substr(commaIndexes[1] + 1, std::string::npos));
                 WorkoutType type;
-                switch(line[commaIndexes[0]+1]){
+                switch (line[commaIndexes[0] + 1]) {
                     case 'A':
                         type = ANAEROBIC;
                         break;
@@ -55,7 +55,7 @@ Studio::Studio(const std::string &configFilePath) { // **Check if needs to throw
                         break;
                 }
 
-                workout_options.push_back(new Workout(workoutIds,name,price,type));
+                workout_options.push_back(new Workout(workoutIds, name, price, type));
                 workoutIds++;
             }
 
@@ -65,20 +65,32 @@ Studio::Studio(const std::string &configFilePath) { // **Check if needs to throw
 }
 
 void Studio::start() {
-    open= true;
-    int customerid =0;
-    std::cout << "Studio is now open!"std::endl;
-    while(open){
+    open = true;
+    int customerid = 0;
+    std::cout << "Studio is now open!"std
+    ::endl;
+    while (open) {
         std::string input;
         std::cin >> input;
-        std::string action = input.substr(0,input.find(" "));
-        switch (action) {
+        std::string action = input.substr(0, input.find(" "));
+        std::map<std::string, int> m{{"open",            1},
+                                     {"order",           2},
+                                     {"move",            3},
+                                     {"close",           4},
+                                     {"closeall",        5},
+                                     {"workout_options", 6},
+                                     {"status",          7},
+                                     {"log",             8},
+                                     {"backup",          9},
+                                     {"restore",         10}};
 
-            case "open": {
+        switch (m[action]) {
+
+            case 1: {
                 input.erase(0, 5);
                 std::string trainerid = input.substr(0, input.find(" "));
                 input.erase(0, input.find(" ") + 1);
-                std::vector <Customer> customerList;
+                std::vector < Customer * > customerList;
                 int capacity = trainers[std::stoi(trainerid)]->getCapacity();
                 int trainercounter = 0;
                 while (!input.empty() || capacity > trainercounter) {
@@ -90,46 +102,47 @@ void Studio::start() {
                 OpenTrainer::OpenTrainer(trainerid, customerList).act(this);
             }
 
-            case "order": {
+            case 2: {
                 std::string trainerid = input.substr(6, std::string::npos);
                 Order::Order(std::stoi(trainerid)).act(this);
             }
 
-            case "move": {
+            case 3: {
                 input.erase(0, 5);
                 std::string srctrainer = input.substr(0, input.find(" "));
                 input.erase(0, input.find(" ") + 1);
                 std::string dsttrainer = input.substr(0, input.find(" "));
                 input.erase(0, input.find(" ") + 1);
                 std::string customerid = input;
-                MoveCustomer::MoveCustomer(std::stoi(srctrainer), std::stoi(dsttrainer), std::stoi(customerid)).act(this);
+                MoveCustomer::MoveCustomer(std::stoi(srctrainer), std::stoi(dsttrainer), std::stoi(customerid)).act(
+                        this);
             }
 
-            case "close": {
+            case 4: {
                 std::string trainerId = input.substr(6);
                 Close::Close(std::stoi(trainerId)).act(this);
             }
 
-            case "closeall":{
+            case 5: {
                 CloseAll::CloseAll().act(this);
             }
 
-            case "workout_options":{
+            case 6: {
                 PrintWorkoutOptions::PrintWorkoutOptions().act(this);
             }
 
-            case "status":{
+            case 7: {
                 std::string trainerid = input.substr(7);
                 PrintTrainerStatus::PrintTrainerStatus(std::stoi(trainerid)).act(this);
             }
-            case "log":{
+            case 8: {
                 PrintActionsLog::PrintActionsLog().act(this);
             }
-            case "backup":{
+            case 9: {
                 BackupStudio::BackupStudio().act(this);
             }
 
-            case "restore":{
+            case 10: {
                 RestoreStudio::RestoreStudio().act(this);
             }
         }
@@ -225,14 +238,14 @@ int Studio::getNumOfTrainers() const { return trainers.size(); }
 
 Trainer *Studio::getTrainer(int tid) { return trainers[tid]; } //what happens if ID trainer is out of bounds
 
-const std::vector<BaseAction *>& getActionsLog() const { return &actionsLog; }
+const std::vector<BaseAction *> &getActionsLog() const { return &actionsLog; }
 
 std::vector <Workout> &Studio::getWorkoutOptions() { return &workout_options; }
 
-void Studio::setOpen(bool state) {open=state;}
+void Studio::setOpen(bool state) { open = state; }
 
 std::string Studio::getWorkOutName(int workoutid) {
-    for(Workout workout : workout_options){
-        if(workout.getId()==workoutid) return workout.getName();
+    for (Workout workout: workout_options) {
+        if (workout.getId() == workoutid) return workout.getName();
     }
 }
