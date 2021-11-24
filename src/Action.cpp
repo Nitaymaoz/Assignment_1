@@ -209,7 +209,7 @@ void Close::act(Studio &studio) {
     if (trainer == nullptr || !trainer.isOpen()) {
         error("Trainer does not exist or is not open")
     } else {
-        std::cout << trainer.getSalary()
+        std::cout << "Trainer " + std::to_string(trainerId)+ " closed. Salary "+ trainer.getSalary()+"NIS\n"
                   << std::endl; //This row has to be before closeTrainer because getSalary updates the trainers salary
         trainer.closeTrainer();
         complete();

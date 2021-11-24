@@ -73,38 +73,65 @@ void Studio::start() {
         std::cin >> input;
         std::string action = input.substr(0,input.find(" "));
         switch (action) {
-            case "open":
-                input.erase(0,5);
-                std::string trainerid=input.substr(0,input.find(" "));
-                input.erase(0,input.find(" ")+1);
-                std::vector<Customer> customerList;
-                int capacity =trainers[std::stoi(trainerid)]->getCapacity();
-                int trainercounter=0;
-                while (!input.empty() || capacity>trainercounter){
-                    customerList.push_back(Customer::makeNewCustomer(input,customerid));
+
+            case "open": {
+                input.erase(0, 5);
+                std::string trainerid = input.substr(0, input.find(" "));
+                input.erase(0, input.find(" ") + 1);
+                std::vector <Customer> customerList;
+                int capacity = trainers[std::stoi(trainerid)]->getCapacity();
+                int trainercounter = 0;
+                while (!input.empty() || capacity > trainercounter) {
+                    customerList.push_back(Customer::makeNewCustomer(input, customerid));
                     trainercounter++;
                     customerid++;
-                    input.erase(0,input.find(" ")+1);
+                    input.erase(0, input.find(" ") + 1);
                 }
-                OpenTrainer::OpenTrainer(trainerid,customerList).act(this);
-            case "order":
-                std::string trainerid=input.substr(6,std::string::npos);
+                OpenTrainer::OpenTrainer(trainerid, customerList).act(this);
+            }
+
+            case "order": {
+                std::string trainerid = input.substr(6, std::string::npos);
                 Order::Order(std::stoi(trainerid)).act(this);
-            case "move":
+            }
 
-            case "close":
+            case "move": {
+                input.erase(0, 5);
+                std::string srctrainer = input.substr(0, input.find(" "));
+                input.erase(0, input.find(" ") + 1);
+                std::string dsttrainer = input.substr(0, input.find(" "));
+                input.erase(0, input.find(" ") + 1);
+                std::string customerid = input;
+                MoveCustomer::MoveCustomer(std::stoi(srctrainer), std::stoi(dsttrainer), std::stoi(customerid)).act(this);
+            }
 
-            case "closeall":
+            case "close": {
+                std::string trainerId = input.substr(6);
+                Close::Close(std::stoi(trainerId)).act(this);
+            }
 
-            case "workout_options":
+            case "closeall":{
+                CloseAll::CloseAll().act(this);
+            }
 
-            case "status":
+            case "workout_options":{
+                PrintWorkoutOptions::PrintWorkoutOptions().act(this);
+            }
 
-            case "log":
+            case "status":{
+                std::string trainerid = input.substr(7);
+                PrintTrainerStatus::PrintTrainerStatus(std::stoi(trainerid)).act(this);
+            }
+            case "log":{
+                PrintActionsLog::PrintActionsLog().act(this);
+            }
+            case "backup":{
+                BackupStudio::BackupStudio().act(this);
+            }
 
-            case "backup":
-
-            case "restore":
+            case "restore":{
+                RestoreStudio::RestoreStudio().act(this);
+            }
         }
     }
 

@@ -137,7 +137,7 @@ void Trainer::openTrainer() { open = true; }
 void Trainer::closeTrainer() {
     open= false;
     capacity=original_capacity;
-    salary=salary +getSalary();
+    salary=getSalary();
     for(Customer* customer: customersList){
         removeCustomer(customer->getId());
     }
@@ -150,9 +150,10 @@ int Trainer::getSalary() {
     int tempsalary=0;
     for (int i = 0; i < orderList.size(); ++i) {
 
-        tempsalary = tempsalary + orderList[i].first;
+        tempsalary += orderList[i].second.getPrice();
     }
     return tempsalary+salary;
+
 }
 
 bool Trainer::isOpen() { return open; }
