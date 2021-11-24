@@ -2,16 +2,20 @@
 #include "../include/Customer.h"
 
 
-Trainer::Trainer(int t_capacity) {capacity=t_capacity; original_capacity=t_capacity; open=false;}
+Trainer::Trainer(int t_capacity) {
+    capacity = t_capacity;
+    original_capacity = t_capacity;
+    open = false;
+}
 
 
 // Rule of 5
 //Destructor
-virtual Trainer::~Trainer(){
+virtual Trainer::~Trainer() {
 
-    if (customersList){
-        for(Customer *customer: customersList){
-            if(*customer != nullptr){
+    if (customersList) {
+        for (Customer *customer: customersList) {
+            if (*customer != nullptr) {
                 delete *customer;
                 *customer = nullptr;
             }
@@ -23,17 +27,14 @@ virtual Trainer::~Trainer(){
 }
 
 // Copy Constructor
-Trainer::Trainer(const Trainer &other) {
-    capacity = other.capacity;
-    open = other.open;
-    std::vector<Customer *> customerList;
-    std::vector<OrderPair> orderList;
+Trainer::Trainer(const Trainer &other) : capacity(other.capacity), original_capacity(other.original_capacity),
+                                         open(other.open), customersList(), orderList(), salary(other.salary) {
+
+    orderList = std::vector<OrderPair>(other.orderList);
     for (int i = 0; i < other.customersList.size(); ++i) {
         customersList.push_back(other.customersList[i]->clone()); ////Added clone function check if works
     }
-    for (int i = 0; i < other.orderList.size(); ++i) {
-        orderList.push_back(new OrderPair(other.orderList[i]));
-    }
+
 }
 
 //Copy Assignment Operator
@@ -46,16 +47,17 @@ Trainer &Trainer::operator=(const Trainer &other) {
         capacity = other.capacity;
         open = other.open;
         for (Customer *customer: other.customersList) {
-            customersList.push_back(new Customer(customer->getName(),customer->getId()));
+            customersList.push_back(new Customer(customer->getName(), customer->getId()));
         }
         for (OrderPair pair: other.orderList) {
-            orderList.push_back(new OrderPair (pair.first,pair.second)); //check new pair
+            orderList.push_back(new OrderPair(pair.first, pair.second)); //check new pair
         }
     }
     return *this;
 }
+
 // Move Constructor
-Trainer::Trainer(Trainer&& other) {
+Trainer::Trainer(Trainer &&other) {
     capacity = other.capacity;
     open = other.open;
     customersList = other.customersList;
@@ -81,12 +83,12 @@ const Trainer &Trainer::operator=(Trainer &&other) {
 }
 
 
-
 int Trainer::getCapacity() const { return capacity; }
 
 void Trainer::addCustomer(Customer *customer) {
-    capacity=capacity-1;
-    customersList.insert(customersList.end(),customer) //currently holding a pointer to a RAM location - later on check if a new object is needed.
+    capacity = capacity - 1;
+    customersList.insert(customersList.end(),
+                         customer) //currently holding a pointer to a RAM location - later on check if a new object is needed.
 }
 
 void Trainer::removeCustomer(int id) {
@@ -97,7 +99,7 @@ void Trainer::removeCustomer(int id) {
             deleted = true;
         }
     }
-    capacity = capacity+1;
+    capacity = capacity + 1;
 }
 
 Customer *Trainer::getCustomer(int id) {
@@ -135,24 +137,24 @@ void Trainer::order(const int customer_id, const std::vector<int> workout_ids,
 void Trainer::openTrainer() { open = true; }
 
 void Trainer::closeTrainer() {
-    open= false;
-    capacity=original_capacity;
-    salary=getSalary();
-    for(Customer* customer: customersList){
+    open = false;
+    capacity = original_capacity;
+    salary = getSalary();
+    for (Customer *customer: customersList) {
         removeCustomer(customer->getId());
     }
-    std::vector<OrderPair> newOrderList;
-    orderList=newOrderList; //using assignment operator
+    std::vector <OrderPair> newOrderList;
+    orderList = newOrderList; //using assignment operator
 
 }
 
 int Trainer::getSalary() {
-    int tempsalary=0;
+    int tempsalary = 0;
     for (int i = 0; i < orderList.size(); ++i) {
 
         tempsalary += orderList[i].second.getPrice();
     }
-    return tempsalary+salary;
+    return tempsalary + salary;
 
 }
 
