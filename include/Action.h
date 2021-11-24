@@ -6,7 +6,7 @@
 #include "Customer.h"
 #include "Studio.h"
 
-enum ActionStatus{
+enumActionStatus{
     COMPLETED, ERROR
 };
 
