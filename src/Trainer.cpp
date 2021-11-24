@@ -18,16 +18,8 @@ virtual Trainer::~Trainer(){
         }
     }
 
-    if (orderList) {
-        for(OrderPair pair: orderList){
-            if(pair != nullptr){
-                delete pair;
-                pair = nullptr;
-            }
-        }
-    }
-    customersList.clear()
-    orderList.clear()
+    customersList.clear();
+    orderList.clear();
 }
 
 // Copy Constructor
@@ -37,7 +29,7 @@ Trainer::Trainer(const Trainer &other) {
     customersList = new std::vector<Customer *>;
     orderList = new std::vector<OrderPair>;
     for (int i = 0; i < other.customersList.size(); ++i) {
-        customersList.push_back(new Customer(other.customersList[i]));
+        customersList.push_back(new Customer(other.customersList[i])); ////Check if Works
     }
     for (int i = 0; i < other.orderList.size(); ++i) {
         orderList.push_back(new OrderPair(other.orderList[i]));
@@ -62,7 +54,31 @@ Trainer &Trainer::operator=(const Trainer &other) {
     }
     return *this;
 }
+// Move Constructor
+Trainer::Trainer(Trainer&& other) {
+    capacity = other.capacity;
+    open = other.open;
+    customersList = other.customersList;
+    orderList = other.orderList;
+    other.customersList = nullptr;
+    other.orderList = nullptr;
+}
 
+// Move Assignment operator
+const Trainer &Trainer::operator=(Trainer &&other) {
+    if (this != &other) {
+
+        if (customersList) customersList.clear();
+        if (orderList) orderList.clear();
+        capacity = other.capacity;
+        open = other.open;
+        customersList = other.customersList;
+        orderList = other.orderList;
+        other.customersList = nullptr;
+        other.orderList = nullptr;
+    }
+    return *this;
+}
 
 
 

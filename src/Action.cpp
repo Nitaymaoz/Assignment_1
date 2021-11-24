@@ -26,6 +26,64 @@ std::string BaseAction::getLog() {
 
 //OpenTrainer functions
 
+//Rule of 5
+
+//Destructor
+virtual OpenTrainer::~OpenTrainer() {
+    if (customers){
+        for(Customer *customer: customers){
+            if(*customer != nullptr){
+                delete *customer;
+                *customer = nullptr;
+            }
+        }
+    }
+}
+
+//Copy Constructor
+OpenTrainer::OpenTrainer(const OpenTrainer& other){
+    trainerId = other.trainerId;
+    customers = new std::vector<Customer *>;
+    for (int i = 0; i < other.customers.size(); ++i) {
+        customers.push_back(new Customer(other.customers[i]));
+    }
+}
+
+//Copy Assignment Operator
+OpenTrainer &OpenTrainer::operator=(const OpenTrainer &other) {
+    if (this != &other) {
+
+        if (customers) customers.clear();
+
+        trainerId = other.trainerId;
+
+        for (Customer *customer: other.customers) {
+            customers.push_back(new Customer(customer->getName(),customer->getId()));
+        }
+
+    }
+    return *this;
+}
+
+//Move Constructor
+OpenTrainer::OpenTrainer(OpenTrainer &&other) {
+    trainerId = other.trainerId;
+    customers = other.customers;
+    other.customers = nullptr;
+}
+
+//Move Assignment Operator
+const OpenTrainer &OpenTrainer::operator=(OpenTrainer &&other) {
+    if (this != &other) {
+
+        if (customers) customers.clear();
+        trainerId = other.trainerId;
+        customers = other.customers;
+        other.customersList = nullptr;
+    }
+    return *this;
+}
+
 void OpenTrainer::act(Studio &studio) {
     Trainer *trainer = studio.getTrainer(trainerId);
     if (trainer == nullptr || trainer->isOpen()) { error("Workout Session does not exist or is already open."); }
@@ -263,7 +321,7 @@ void RestoreStudio::act(Studio &studio) {
     if (backup== nullptr)
         error("No backup available");
     else{
-        Studio copystudio(backup);//copy constructor
+        Studio& copystudio(backup);//copy constructor
         studio=copystudio; //move assignment
     }
     if(getStatus()==COMPLETED)
