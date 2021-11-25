@@ -71,8 +71,8 @@ void Order::act(Studio &studio) {
         for (Customer *customer: trainer->getCustomers()) {
             std::vector<int> order = customer->order(workout_options);
             trainer->order(customer->getId(), order,workout_options);
-            for (int i = 0; i < order.size(); ++i) {
-                std::cout << customer->getName() + " Is Doing " + studio.getWorkOutName(order[i]);
+            for(int workoutid : order){
+                std::cout << customer->getName() + " Is Doing " + studio.getWorkOutName(order[workoutid]);
             }
         }
         complete();
