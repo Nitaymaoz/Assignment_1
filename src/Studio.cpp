@@ -8,7 +8,6 @@ Studio::Studio(const std::string &configFilePath) { // **Check if needs to throw
     if (configFile.is_open()) {
         std::string line;
         int counter = 0;
-        int numberOfTrainers;
         int workoutIds = 0;
         while (getline(configFile, line)) {
 
@@ -67,7 +66,6 @@ Studio::Studio(const std::string &configFilePath) { // **Check if needs to throw
 
 void Studio::start() {
     open = true;
-    int customerid = 0;
     std::cout << "Studio is now open!" << std::endl;
     while (open) {
         std::string input;
@@ -99,12 +97,14 @@ void Studio::start() {
                     customerid++;
                     input.erase(0, input.find(" ") + 1);
                 }
-                OpenTrainer::OpenTrainer(trainerid, customerList).act(this);
+                BaseAction *openTrainer = new OpenTrainer(trainerid, customerList);
+                openTrainer->act(*this);
             }
 
             case 2: {
                 std::string trainerid = input.substr(6, std::string::npos);
-                Order::Order(std::stoi(trainerid)).act(this);
+                BaseAction *order = new Order(std::stoi(trainerid));
+                order->act(*this);
             }
 
             case 3: {
@@ -114,36 +114,44 @@ void Studio::start() {
                 std::string dsttrainer = input.substr(0, input.find(" "));
                 input.erase(0, input.find(" ") + 1);
                 std::string customerid = input;
-                MoveCustomer::MoveCustomer(std::stoi(srctrainer), std::stoi(dsttrainer), std::stoi(customerid)).act(
-                        this);
+                BaseAction *move = new MoveCustomer(std::stoi(srctrainer), std::stoi(dsttrainer),
+                                                    std::stoi(customerid));
+                move->act(*this);
             }
 
             case 4: {
                 std::string trainerId = input.substr(6);
-                Close::Close(std::stoi(trainerId)).act(this);
+                BaseAction *close = new Close(std::stoi(trainerId));
+                close->act(*this);
             }
 
             case 5: {
-                CloseAll::CloseAll().act(this);
+                BaseAction *closeAll = new CloseAll();
+                closeAll->act(*this);
             }
 
             case 6: {
-                PrintWorkoutOptions::PrintWorkoutOptions().act(this);
+                BaseAction *printWorkouts = new PrintWorkoutOptions();
+                printWorkouts->act(*this);
             }
 
             case 7: {
                 std::string trainerid = input.substr(7);
-                PrintTrainerStatus::PrintTrainerStatus(std::stoi(trainerid)).act(this);
+                BaseAction *printStatus = new PrintTrainerStatus(std::stoi(trainerid));
+                printStatus->act(*this);
             }
             case 8: {
-                PrintActionsLog::PrintActionsLog().act(this);
+                BaseAction *printLog = new PrintActionsLog();
+                printLog->act(*this);
             }
             case 9: {
-                BackupStudio::BackupStudio().act(this);
+                BaseAction *backup = new BackupStudio();
+                backup->act(*this);
             }
 
             case 10: {
-                RestoreStudio::RestoreStudio().act(this);
+                BaseAction *restore = new RestoreStudio();
+                restore->act(*this);
             }
         }
     }
@@ -177,12 +185,12 @@ Studio::~Studio() {
 
 //Copy Constructor
 Studio::Studio(const Studio &other) : open(other.open), trainers(), workout_options(other.workout_options),
-                                      actionsLog() {
+                                      actionsLog(), customerid(other.customerid) {
 
-    for (Trainer *trainer : other.trainers) {
+    for (Trainer *trainer: other.trainers) {
         trainers.push_back(new Trainer(trainer));
     }
-    for (BaseAction *action : other.actionsLog) {
+    for (BaseAction *action: other.actionsLog) {
         actionsLog.push_back(new BaseAction(action));
     }
 }
@@ -195,6 +203,7 @@ Studio &Studio::operator=(const Studio &other) {
         actionsLog.clear();
         workout_options = other.workout_options;
         open = other.open;
+        customerid = other.customerid;
         for (Trainer *trainer: other.trainers) {
             trainers.push_back(new Trainer(*trainer));
         }
@@ -209,6 +218,7 @@ Studio &Studio::operator=(const Studio &other) {
 Studio::Studio(Studio &&other) {
     workout_options = other.workout_options;
     open = other.open;
+    customerid = other.customerid;
     trainers = std::move(other.trainers);
     actionsLog = std::move(other.actionsLog);
 
@@ -222,6 +232,7 @@ const Studio &Studio::operator=(Studio &&other) {
         actionsLog.clear();
         workout_options = other.workout_options;
         open = other.open;
+        customerid = other.customerid;
         trainers = std::move(other.trainers);
         actionsLog = std::move(other.actionsLog);
     }
