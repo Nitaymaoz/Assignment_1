@@ -15,7 +15,6 @@ int Customer::getId() const { return id; }
 
 
 Customer *Customer::makeNewCustomer(std::string input, int id) { //function gets a string  "<Name>,<Workout_Type>"
-    std::string customer = input.substr(0, input.find(" "));
     std::string name = input.substr(0, input.find(","));
     char type = input[input.find(",")+1];
     switch (type) {

@@ -1,6 +1,7 @@
 #include "../include/Studio.h"
 #include <fstream>
 #include <algorithm>
+#include <map>
 
 Studio::Studio(const std::string &configFilePath) { // **Check if needs to throw exceptions**
     std::ifstream configFile("ExampleInput.txt");
@@ -14,24 +15,24 @@ Studio::Studio(const std::string &configFilePath) { // **Check if needs to throw
             if (line.empty()) continue;
 
             if (line[0] == '#') {
-                counter++
+                counter++;
                 continue;
             }
 
             if (counter == 2) {
-                line.erase(std::remove_if(line.begin(), line.end(), isspace()), line.end());
+                line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
                 std::string trainerCapacity;
                 for (int i = 0; i < line.size(); ++i) {
                     if (line[i] != ',') trainerCapacity.push_back(line[i]);
                     else {
                         trainers.push_back(new Trainer(std::stoi(trainerCapacity)));
-                        trainerCapacity.clear;
+                        trainerCapacity.clear();
                     }
                 }
             }
 
             if (counter == 3) {
-                line.erase(std::remove_if(line.begin(), line.end(), isspace()), line.end());
+                line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
                 std::vector<int> commaIndexes;
                 int j = 0; // counts the commas
                 for (int i = 0; i < line.size() && j < 2; ++i) {
@@ -55,7 +56,7 @@ Studio::Studio(const std::string &configFilePath) { // **Check if needs to throw
                         break;
                 }
 
-                workout_options.push_back(new Workout(workoutIds, name, price, type));
+                workout_options.push_back(Workout(workoutIds, name, price, type)); // check if need 'new'
                 workoutIds++;
             }
 
@@ -67,8 +68,7 @@ Studio::Studio(const std::string &configFilePath) { // **Check if needs to throw
 void Studio::start() {
     open = true;
     int customerid = 0;
-    std::cout << "Studio is now open!"std
-    ::endl;
+    std::cout << "Studio is now open!" << std::endl;
     while (open) {
         std::string input;
         std::cin >> input;
@@ -236,9 +236,9 @@ int Studio::getNumOfTrainers() const { return trainers.size(); }
 
 Trainer *Studio::getTrainer(int tid) { return trainers[tid]; } //what happens if ID trainer is out of bounds
 
-const std::vector<BaseAction *> &Studio::getActionsLog() const {return actionsLog;}
+const std::vector<BaseAction *> &Studio::getActionsLog() const { return actionsLog; }
 
-std::vector <Workout> &Studio::getWorkoutOptions() {return workout_options;}
+std::vector <Workout> &Studio::getWorkoutOptions() { return workout_options; }
 
 void Studio::setOpen(bool state) { open = state; }
 

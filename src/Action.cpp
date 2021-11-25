@@ -110,7 +110,7 @@ void MoveCustomer::act(Studio &studio) {
                 removedOrders.push_back(pair);
             }
         }
-        srctrainer->setCustomers(newOrderList); //using a new function to change customers in trainer
+        srctrainer->setOrders(newOrderList); //using a new function to change customers in trainer
 
         if (srctrainer->getCustomers().empty())
             srctrainer->closeTrainer();

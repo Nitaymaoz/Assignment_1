@@ -2,18 +2,19 @@
 #include "../include/Customer.h"
 
 
-Trainer::Trainer(int t_capacity):capacity(t_capacity),original_capacity(t_capacity),open(false){}
+Trainer::Trainer(int t_capacity) : capacity(t_capacity), original_capacity(t_capacity), open(false), customersList(),
+                                   orderList() {}
 
 
 // Rule of 5
 //Destructor
-virtual Trainer::~Trainer() {
+Trainer::~Trainer() {
 
-    if (customersList) {
+    if (!customersList.empty()) {
         for (Customer *customer: customersList) {
-            if (*customer != nullptr) {
-                delete *customer;
-                *customer = nullptr;
+            if (customer != nullptr) {
+                delete customer;
+                customer = nullptr;
             }
         }
     }
@@ -38,15 +39,16 @@ Trainer &Trainer::operator=(const Trainer &other) {
 
     if (this != &other) {
 
-        if (customersList) customersList.clear();
-        if (orderList) orderList.clear();
+        customersList.clear();
+        orderList.clear();
         capacity = other.capacity;
         open = other.open;
         for (Customer *customer: other.customersList) {
-            customersList.push_back(new Customer(customer->getName(), customer->getId()));
+            customersList.push_back(customer->clone());
         }
         for (OrderPair pair: other.orderList) {
-            orderList.push_back(new OrderPair(pair.first, pair.second)); //check new pair
+            OrderPair newPair = std::make_pair(pair.first, pair.second);
+            orderList.push_back(newPair); //check new pair
         }
     }
     return *this;
@@ -56,24 +58,24 @@ Trainer &Trainer::operator=(const Trainer &other) {
 Trainer::Trainer(Trainer &&other) {
     capacity = other.capacity;
     open = other.open;
-    customersList = other.customersList;
-    orderList = other.orderList;
-    other.customersList = nullptr;
-    other.orderList = nullptr;
+    original_capacity = other.original_capacity;
+    salary = other.salary;
+    customersList = std::move(other.customersList);
+    orderList = std::move(other.orderList);
 }
 
 // Move Assignment operator
 const Trainer &Trainer::operator=(Trainer &&other) {
     if (this != &other) {
 
-        if (customersList) customersList.clear();
-        if (orderList) orderList.clear();
+        customersList.clear();
+        orderList.clear();
         capacity = other.capacity;
         open = other.open;
-        customersList = other.customersList;
-        orderList = other.orderList;
-        other.customersList = nullptr;
-        other.orderList = nullptr;
+        original_capacity = other.original_capacity;
+        salary = other.salary;
+        customersList = std::move(other.customersList);
+        orderList = std::move(other.orderList);
     }
     return *this;
 }
@@ -83,8 +85,7 @@ int Trainer::getCapacity() const { return capacity; }
 
 void Trainer::addCustomer(Customer *customer) {
     capacity = capacity - 1;
-    customersList.insert(customersList.end(),
-                         customer) //currently holding a pointer to a RAM location - later on check if a new object is needed.
+    customersList.push_back(customer);
 }
 
 void Trainer::removeCustomer(int id) {
@@ -137,18 +138,18 @@ void Trainer::closeTrainer() {
     capacity = original_capacity;
     salary = getSalary();
     for (Customer *customer: customersList) {
-        removeCustomer(customer->getId());
+        delete customer;
     }
-    std::vector <OrderPair> newOrderList;
-    orderList = newOrderList; //using assignment operator
+    customersList.clear();
+    orderList.clear();
 
 }
 
 int Trainer::getSalary() {
     int tempsalary = 0;
-    for (int i = 0; i < orderList.size(); ++i) {
+    for (OrderPair pair : orderList) {
 
-        tempsalary += orderList[i].second.getPrice();
+        tempsalary += pair.second.getPrice();
     }
     return tempsalary + salary;
 
@@ -156,8 +157,11 @@ int Trainer::getSalary() {
 
 bool Trainer::isOpen() { return open; }
 
-void Trainer::setCustomers(std::vector<OrderPair> orders) {
-    orderList=orders;
+void Trainer::setOrders(std::vector <OrderPair> orders) {
+    orderList.clear();
+    for(OrderPair pair : orders){
+        orderList.push_back(pair);
+    }
 }
 
 void Trainer::addOrder(OrderPair order) {
