@@ -26,6 +26,9 @@ public:
     void closeTrainer();
     int getSalary();
     bool isOpen();
+    void setCustomers(std::vector<OrderPair> orders);
+    void addOrder(OrderPair order);
+
 private:
     int capacity;
     int original_capacity;

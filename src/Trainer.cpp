@@ -2,11 +2,7 @@
 #include "../include/Customer.h"
 
 
-Trainer::Trainer(int t_capacity) {
-    capacity = t_capacity;
-    original_capacity = t_capacity;
-    open = false;
-}
+Trainer::Trainer(int t_capacity):capacity(t_capacity),original_capacity(t_capacity),open(false){}
 
 
 // Rule of 5
@@ -159,3 +155,11 @@ int Trainer::getSalary() {
 }
 
 bool Trainer::isOpen() { return open; }
+
+void Trainer::setCustomers(std::vector<OrderPair> orders) {
+    orderList=orders;
+}
+
+void Trainer::addOrder(OrderPair order) {
+    orderList.push_back(order);
+}
