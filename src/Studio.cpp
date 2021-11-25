@@ -153,19 +153,19 @@ void Studio::start() {
 //Rule of 5
 //Destructor
 Studio::~Studio() {
-    if (trainers) {
+    if (!trainers.empty()) {
         for (Trainer *trainer: trainers) {
-            if (*trainer != nullptr) {
-                delete *trainer;
-                *trainer = nullptr;
+            if (trainer != nullptr) {
+                delete trainer;
+                trainer = nullptr;
             }
         }
     }
-    if (actionsLog) {
+    if (!actionsLog.empty()) {
         for (BaseAction *action: actionsLog) {
-            if (*action != nullptr) {
-                delete *action;
-                *action = nullptr;
+            if (action != nullptr) {
+                delete action;
+                action = nullptr;
             }
         }
     }
@@ -179,11 +179,11 @@ Studio::~Studio() {
 Studio::Studio(const Studio &other) : open(other.open), trainers(), workout_options(other.workout_options),
                                       actionsLog() {
 
-    for (int i = 0; i < other.trainers.size(); ++i) {
-        trainers.push_back(new Trainer(other.trainers[i])); //Check if Works
+    for (Trainer *trainer : other.trainers) {
+        trainers.push_back(new Trainer(trainer));
     }
-    for (int i = 0; i < other.actionsLog.size(); ++i) {
-        actionsLog.push_back(new BaseAction(other.actionsLog[i]));
+    for (BaseAction *action : other.actionsLog) {
+        actionsLog.push_back(new BaseAction(action));
     }
 }
 
@@ -191,15 +191,15 @@ Studio::Studio(const Studio &other) : open(other.open), trainers(), workout_opti
 Studio &Studio::operator=(const Studio &other) {
     if (this != &other) {
 
-        if (trainers) trainers.clear();
-        if (actionsLog) actionsLog.clear();
+        trainers.clear();
+        actionsLog.clear();
         workout_options = other.workout_options;
         open = other.open;
         for (Trainer *trainer: other.trainers) {
             trainers.push_back(new Trainer(*trainer));
         }
         for (BaseAction *action: other.actionsLog) {
-            actionsLog.push_back(new BaseAction(action)); //check if BaseAction default copy cons. works
+            actionsLog.push_back(new BaseAction(action));
         }
     }
     return *this;
@@ -209,25 +209,21 @@ Studio &Studio::operator=(const Studio &other) {
 Studio::Studio(Studio &&other) {
     workout_options = other.workout_options;
     open = other.open;
-    trainers = other.trainers;
-    actionsLog = other.actionsLog;
-    other.trainers = nullptr;
-    other.actionsLog = nullptr;
+    trainers = std::move(other.trainers);
+    actionsLog = std::move(other.actionsLog);
+
 }
 
 //Move Assignment Operator
 const Studio &Studio::operator=(Studio &&other) {
     if (this != &other) {
 
-        if (trainers) trainers.clear();
-        if (actionsLog) actionsLog.clear();
+        trainers.clear();
+        actionsLog.clear();
         workout_options = other.workout_options;
         open = other.open;
-        trainers = other.trainers;
-        actionsLog = other.actionsLog;
-        other.trainers = nullptr;
-        other.actionsLog
-                = nullptr;
+        trainers = std::move(other.trainers);
+        actionsLog = std::move(other.actionsLog);
     }
     return *this;
 }

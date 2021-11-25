@@ -6,6 +6,7 @@ BaseAction::~BaseAction()
 
 noexcept { }
 
+BaseAction::BaseAction(const BaseAction &other) : errorMsg(other.errorMsg), status(other.status), log(other.log) {}
 
 void BaseAction::complete() { status = COMPLETED; }
 
@@ -47,7 +48,8 @@ void OpenTrainer::act(Studio &studio) {
 }
 
 OpenTrainer::OpenTrainer(int id,
-                         std::vector<Customer *> &customersList) : trainerId(id), customers(customersList) {} //initialized customers in the initialization list
+                         std::vector<Customer *> &customersList) : trainerId(id), customers(
+        customersList) {} //initialized customers in the initialization list
 
 std::string OpenTrainer::toString() const {
     std::string tostring = "open " + std::to_string(trainerId);
@@ -68,8 +70,8 @@ void Order::act(Studio &studio) {
         std::vector <Workout> workout_options = studio.getWorkoutOptions();
         for (Customer *customer: trainer->getCustomers()) {
             std::vector<int> order = customer->order(workout_options);
-            trainer->order(customer->getId(), order,workout_options);
-            for(int workoutid : order){
+            trainer->order(customer->getId(), order, workout_options);
+            for (int workoutid: order) {
                 std::cout << customer->getName() + " Is Doing " + studio.getWorkOutName(order[workoutid]);
             }
         }
