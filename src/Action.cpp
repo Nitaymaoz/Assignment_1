@@ -28,7 +28,7 @@ std::string BaseAction::getLog() {
 
 void OpenTrainer::act(Studio &studio) {
     Trainer *trainer = studio.getTrainer(trainerId);
-    if (trainer == nullptr || trainer->isOpen()) { error("Workout Session does not exist or is already open."); }
+    if (trainer == nullptr || trainer->isOpen()) { error("Workout Session does not exist or is not open."); }
     else {
         trainer->openTrainer(); // Opening workout session
         for (Customer *customer: customers) {
@@ -43,9 +43,7 @@ void OpenTrainer::act(Studio &studio) {
 }
 
 OpenTrainer::OpenTrainer(int id,
-                         std::vector<Customer *> &customersList) { //maybe need to start the baseaction constructor as well
-    BaseAction::BaseAction()
-    trainerId = id;
+                         std::vector<Customer *> &customersList):trainerId(id) { //maybe need to start the baseaction constructor as well
     customers = customersList;
 }
 
@@ -59,7 +57,7 @@ std::string OpenTrainer::toString() const {
 
 //Order functions
 
-Order::Order(int id) { trainerId = id; }
+Order::Order(int id):trainerId(id) {}
 
 void Order::act(Studio &studio) {
     Trainer *trainer = studio.getTrainer(trainerId);
@@ -90,8 +88,8 @@ std::string Order::toString() const {
 MoveCustomer::MoveCustomer(int src, int dst, int customerId):srcTrainer(src) ,dstTrainer(dst) , id(customerId) {}
 
 void MoveCustomer::act(Studio &studio) {
-    Trainer &srctrainer = studio.getTrainer(srcTrainer); //check if reference work
-    Trainer &dsttrainer = studio.getTrainer(dstTrainer);
+    Trainer *srctrainer = studio.getTrainer(srcTrainer); //check if reference work
+    Trainer *dsttrainer = studio.getTrainer(dstTrainer);
     if (srctrainer == nullptr || dsttrainer == nullptr || !srctrainer->isOpen() || !dsttrainer->isOpen() ||
         srctrainer->getCustomer(id) ==
         nullptr || dsttrainer->getCapacity() == 0) {
@@ -103,8 +101,7 @@ void MoveCustomer::act(Studio &studio) {
         std::vector <OrderPair> removedOrders;//will only save the removed orders
         for (OrderPair pair: orderlist) {
             if (pair.first != id) {
-                newOrderList.insert(std::make_pair(newOrderList.begin(),
-                                    pair));   // add all values to a new list - we'll maybe need to use makepair function
+                newOrderList.push_back(pair);   // add all values to a new list - we'll maybe need to use makepair function
             } else {
                 removedOrders.push_back(pair);
             }
@@ -133,8 +130,7 @@ std::string MoveCustomer::toString() const {
 
 // Class Close
 
-Close::Close(int id) {
-    trainerId = id;
+Close::Close(int id):trainerId(id) {
 }
 
 void Close::act(Studio &studio) {
@@ -142,7 +138,7 @@ void Close::act(Studio &studio) {
     if (trainer == nullptr || !trainer.isOpen()) {
         error("Trainer does not exist or is not open");
     } else {
-        std::cout << "Trainer " + std::to_string(trainerId)+ " closed. Salary "+ trainer.getSalary()+"NIS\n"
+        std::cout << "Trainer " + std::to_string(trainerId)+ " closed. Salary "+ std::to_string(trainer.getSalary())+"NIS\n"
                   << std::endl; //This row has to be before closeTrainer because getSalary updates the trainers salary
         trainer.closeTrainer();
         complete();
@@ -194,9 +190,7 @@ std::string PrintWorkoutOptions::toString() const {
 
 //Class PrintTrainerStatus
 
-PrintTrainerStatus::PrintTrainerStatus(int id) {
-    trainerId = id;
-}
+PrintTrainerStatus::PrintTrainerStatus(int id):trainerId(id) {}
 
 std::string PrintTrainerStatus::toString() const {
     return ("status " + std::to_string(trainerId));
