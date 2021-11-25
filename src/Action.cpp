@@ -2,6 +2,10 @@
 #include "../include/Action.h"
 //BaseAction functions
 
+BaseAction::~BaseAction()
+
+noexcept {}
+
 
 void BaseAction::complete() { status = COMPLETED; }
 
@@ -95,8 +99,9 @@ void MoveCustomer::act(Studio &studio) {
         nullptr || dsttrainer->getCapacity() == 0) {
         error("Cannot move customer");
     } else {//need to fix action in order to change orderlist and salary
-        std::vector <OrderPair> orderlist = srctrainer.getOrders(); //reference type
-        srctrainer.removeCustomer(id);
+        std::vector <OrderPair> orderlist = srctrainer->getOrders(); //reference type
+        Customer* removed= srctrainer->getCustomer(id);
+        srctrainer->removeCustomer(id);
         std::vector <OrderPair> newOrderList;
         std::vector <OrderPair> removedOrders;//will only save the removed orders
         for (OrderPair pair: orderlist) {
@@ -108,12 +113,12 @@ void MoveCustomer::act(Studio &studio) {
         }
         orderlist = newOrderList; //using assignment  constructor
 
-        if (srctrainer.getCustomers().empty())
-            srctrainer.closeTrainer();
+        if (srctrainer->getCustomers().empty())
+            srctrainer->closeTrainer();
 
         // add to the new trainer customer + orders
-        dsttrainer.addCustomer(id);
-        std::vector <OrderPair> dstOrderList = dsttrainer.getOrders(); //reference type
+        dsttrainer->addCustomer(removed);
+        std::vector <OrderPair> dstOrderList = dsttrainer->getOrders(); //reference type
         for (OrderPair pair: removedOrders) {
             dstOrderList.push_back(pair);
         }
@@ -125,7 +130,7 @@ void MoveCustomer::act(Studio &studio) {
 }
 
 std::string MoveCustomer::toString() const {
-    return ("move "+ toString(srcTrainer) +" "+toString(dstTrainer) + " " +toString(id));
+    return ("move "+ std::to_string(srcTrainer) +" "+std::to_string(dstTrainer) + " " +std::to_string(id));
 }
 
 // Class Close
@@ -134,13 +139,13 @@ Close::Close(int id):trainerId(id) {
 }
 
 void Close::act(Studio &studio) {
-    Trainer &trainer = studio.getTrainer(trainerId);
-    if (trainer == nullptr || !trainer.isOpen()) {
+    Trainer *trainer = studio.getTrainer(trainerId);
+    if (trainer == nullptr || !trainer->isOpen()) {
         error("Trainer does not exist or is not open");
     } else {
-        std::cout << "Trainer " + std::to_string(trainerId)+ " closed. Salary "+ std::to_string(trainer.getSalary())+"NIS\n"
+        std::cout << "Trainer " + std::to_string(trainerId)+ " closed. Salary "+ std::to_string(trainer->getSalary())+"NIS\n"
                   << std::endl; //This row has to be before closeTrainer because getSalary updates the trainers salary
-        trainer.closeTrainer();
+        trainer->closeTrainer();
         complete();
     }
     addToLog(toString() + " Completed");
@@ -178,7 +183,7 @@ PrintWorkoutOptions::PrintWorkoutOptions() {}
 
 void PrintWorkoutOptions::act(Studio &studio) {
     for (Workout workout: studio.getWorkoutOptions()) {
-        std::cout << workout.getName() + ", " + workout.workOutTypeToString() + ", " + std::to_string(workout.getPrice()) << std::endl();
+        std::cout << workout.getName() + ", " + workout.workOutTypeToString() + ", " + std::to_string(workout.getPrice()) << std::endl;
     }
     complete();
     addToLog(toString() + " Completed");
@@ -203,9 +208,7 @@ void PrintTrainerStatus::act(Studio &studio) {
         std::cout << "open" << std::endl;
         std::cout << "Customers:" << std::endl;
         for (Customer *customer: studio.getTrainer(trainerId)->getCustomers()) {
-            std::cout << std::to_string(customer->getId())
-            " " + std::to_string(customer->getName())
-                    << std::endl(); //print all customers "<customer_ID> <Customer_Name>
+            std::cout << std::to_string(customer->getId()) +" " + customer->getName()<< std::endl; //print all customers "<customer_ID> <Customer_Name>
         }
         std::cout << "Orders:" << std::endl;
         for (OrderPair pair: studio.getTrainer(trainerId)->getOrders()){
@@ -239,7 +242,7 @@ std::string BackupStudio::toString() const {
 }
 
 void BackupStudio::act(Studio &studio) {
-    backup = studio; //assignment operator
+    *backup = studio; //assignment operator
     addToLog(toString());
 }
 
@@ -255,8 +258,8 @@ void RestoreStudio::act(Studio &studio) {
     if (backup== nullptr)
         error("No backup available");
     else{
-        Studio& copystudio(backup);//copy constructor
-        studio=copystudio; //move assignment
+        Studio *copystudio(backup);//copy constructor
+        studio=*copystudio; //move assignment
     }
     if(getStatus()==COMPLETED)
         addToLog(toString() + " Completed");

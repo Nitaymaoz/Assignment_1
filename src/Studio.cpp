@@ -236,9 +236,9 @@ int Studio::getNumOfTrainers() const { return trainers.size(); }
 
 Trainer *Studio::getTrainer(int tid) { return trainers[tid]; } //what happens if ID trainer is out of bounds
 
-const std::vector<BaseAction *> &getActionsLog() const { return &actionsLog; }
+const std::vector<BaseAction *> &Studio::getActionsLog() const {return actionsLog;}
 
-std::vector <Workout> &Studio::getWorkoutOptions() { return &workout_options; }
+std::vector <Workout> &Studio::getWorkoutOptions() {return workout_options;}
 
 void Studio::setOpen(bool state) { open = state; }
 

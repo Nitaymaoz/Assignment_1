@@ -23,6 +23,7 @@ public:
     virtual std::string toString() const=0;
     void addToLog(std::string action); //add action tostring to log
     std::string getLog(); //return current log
+    virtual ~BaseAction() ; //destructor
 protected:
     void complete();
     void error(std::string errorMsg);

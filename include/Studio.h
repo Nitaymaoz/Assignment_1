@@ -7,7 +7,7 @@
 #include "Trainer.h"
 #include "Action.h"
 
-
+class BaseAction; //added forward declaration
 class Studio{		
 public:
 	Studio();
