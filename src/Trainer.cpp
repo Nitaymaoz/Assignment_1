@@ -26,10 +26,10 @@ virtual Trainer::~Trainer(){
 Trainer::Trainer(const Trainer &other) {
     capacity = other.capacity;
     open = other.open;
-    customersList = new std::vector<Customer *>;
-    orderList = new std::vector<OrderPair>;
+    std::vector<Customer *> customerList;
+    std::vector<OrderPair> orderList;
     for (int i = 0; i < other.customersList.size(); ++i) {
-        customersList.push_back(new *Customer(other.customersList[i]->clone())); ////Added clone function check if works
+        customersList.push_back(other.customersList[i]->clone()); ////Added clone function check if works
     }
     for (int i = 0; i < other.orderList.size(); ++i) {
         orderList.push_back(new OrderPair(other.orderList[i]));

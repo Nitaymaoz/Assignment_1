@@ -10,22 +10,22 @@ std::string Customer::getName() const { return name; }
 
 int Customer::getId() const { return id; }
 
-std::vector<int> Customer::order(const std::vector <Workout> &workout_options) {}
 
-std::string Customer::toString() const {}
 
-Customer &Customer::makeNewCustomer(std::string input, int id) {
+
+
+Customer *Customer::makeNewCustomer(std::string input, int id) { //function gets a string  "<Name>,<Workout_Type>"
     std::string customer = input.substr(0, input.find(" "));
     std::string name = input.substr(0, input.find(","));
-    std::string type = input.substr(input.find(",") + 1, 3);
+    char type = input[input.find(",")+1];
     switch (type) {
-        case "swt":
+        case 's':
             return new SweatyCustomer(name, id);
-        case "chp":
+        case 'c':
             return new CheapCustomer(name, id);
-        case "mcl":
+        case 'm':
             return new HeavyMuscleCustomer(name, id);
-        case "fbd":
+        case 'f':
             return new FullBodyCustomer(name, id);
     }
 }
