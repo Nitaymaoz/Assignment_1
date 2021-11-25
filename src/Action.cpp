@@ -240,7 +240,7 @@ PrintWorkoutOptions::PrintWorkoutOptions() {}
 
 void PrintWorkoutOptions::act(Studio &studio) {
     for (Workout workout: studio.getWorkoutOptions()) {
-        std::cout << workout.getName() + ", " + workout.getType() + ", " + std::to_string(workout.getPrice()) << std::endl();
+        std::cout << workout.getName() + ", " + workout.workOutTypeToString() + ", " + std::to_string(workout.getPrice()) << std::endl();
     }
     complete();
     addToLog(toString() + " Completed");
