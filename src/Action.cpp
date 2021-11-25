@@ -71,7 +71,7 @@ void Order::act(Studio &studio) {
         for (Customer *customer: trainer->getCustomers()) {
             std::vector<int> order = customer->order(workout_options);
             trainer->order(customer->getId(), order,workout_options);
-            for (int i = 0; i < order.size(); ++i) {
+            for (unsigned int i = 0; i < order.size(); ++i) {
                 std::cout << customer->getName() + " Is Doing " + studio.getWorkOutName(order[i]);
             }
         }
@@ -111,7 +111,7 @@ void MoveCustomer::act(Studio &studio) {
                 removedOrders.push_back(pair);
             }
         }
-        orderlist = newOrderList; //using assignment  constructor
+        orderlist = newOrderList;
 
         if (srctrainer->getCustomers().empty())
             srctrainer->closeTrainer();
