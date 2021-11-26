@@ -6,6 +6,8 @@ BaseAction::~BaseAction()
 
 noexcept { }
 
+BaseAction::BaseAction():errorMsg(),status(),log() {}
+
 BaseAction::BaseAction(const BaseAction &other) : errorMsg(other.errorMsg), status(other.status), log(other.log) {}
 
 void BaseAction::complete() { status = COMPLETED; }
@@ -14,6 +16,10 @@ void BaseAction::error(std::string errorMsg) {
     this->errorMsg = errorMsg;
     status = ERROR;
     std::cout << errorMsg << std::endl;
+}
+
+std::string BaseAction::getErrorMsg() const {
+    return errorMsg;
 }
 
 ActionStatus BaseAction::getStatus() const {
@@ -33,7 +39,10 @@ std::string BaseAction::getLog() {
 
 void OpenTrainer::act(Studio &studio) {
     Trainer *trainer = studio.getTrainer(trainerId);
-    if (trainer == nullptr || trainer->isOpen()) { error("Workout Session does not exist or is not open."); }
+    if (trainer == nullptr || trainer->isOpen()) {
+        error("Workout Session does not exist or is not open.");
+        addToLog(toString() + " Error: " + getErrorMsg());
+    }
     else {
         trainer->openTrainer(); // Opening workout session
         for (Customer *customer: customers) {
@@ -41,10 +50,8 @@ void OpenTrainer::act(Studio &studio) {
             if (trainer->getCapacity() == 0) break; // not necessary
         }
         complete();
-    }
-    if (getStatus() == COMPLETED)
         addToLog(toString() + " Completed");
-    else addToLog(toString() + " Error: " + getErrorMsg());
+    }
 }
 
 OpenTrainer::OpenTrainer(int id,std::vector<Customer *> &customersList) : trainerId(id), customers(customersList){}
