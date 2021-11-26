@@ -93,7 +93,7 @@ void Studio::start() {
                 int capacity = trainers[std::stoi(trainerid)]->getCapacity();
                 int trainercounter = 0;
                 while (!input.empty() || capacity > trainercounter) {
-                    Customer *c = makeNewCustomer(input, customerid);
+                    Customer *c = makeNewCustomer(input, getCustomerID());
                     customerList.push_back(c);
                     trainercounter++;
                     customerid++;
@@ -283,3 +283,5 @@ std::string Studio::getWorkOutName(int workoutid) {
     }
     return "Never gonna happen bro";
 }
+
+int Studio::getCustomerID() {return this->customerid;}

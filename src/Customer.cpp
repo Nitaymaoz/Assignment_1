@@ -12,6 +12,8 @@ int Customer::getId() const { return id; }
 
 
 //SweatyCustomer
+SweatyCustomer::SweatyCustomer(std::string name, int id) :Customer(name,id){
+}
 
 std::vector<int> SweatyCustomer::order(const std::vector <Workout> &workout_options) {
     std::vector<int> workout_plan;
@@ -33,6 +35,8 @@ Customer *SweatyCustomer::clone() {
 
 
 //Cheap Customer
+
+CheapCustomer::CheapCustomer(std::string name, int id):Customer(name,id) {}
 
 std::vector<int> CheapCustomer::order(const std::vector <Workout> &workout_options) {
     std::vector<int> workout_plan;
@@ -61,6 +65,8 @@ Customer *CheapCustomer::clone() {
 
 //Heavy Muscle Customer
 
+HeavyMuscleCustomer::HeavyMuscleCustomer(std::string name, int id):Customer(name,id) {}
+
 std::vector<int> HeavyMuscleCustomer::order(const std::vector <Workout> &workout_options) {
     std::vector <std::pair<int, int>> workout_plan; // first field is price second is ID
     for (Workout workout: workout_options) {
@@ -88,6 +94,8 @@ Customer *HeavyMuscleCustomer::clone() {
 
 
 //Full Body Customer
+
+FullBodyCustomer::FullBodyCustomer(std::string name, int id) :Customer(name,id){}
 
 std::vector<int> FullBodyCustomer::order(const std::vector <Workout> &workout_options) {
     std::vector <std::pair<int, int>> sort_cardio;

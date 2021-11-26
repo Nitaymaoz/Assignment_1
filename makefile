@@ -4,7 +4,7 @@ all: bin/studio
 bin/studio: bin/main.o bin/Customer.o bin/Action.o bin/Workout.o bin/Trainer.o bin/Studio.o
 	@echo 'Building target: main'
 	@echo 'Invoking: C++ Linker'
-	g++ -o bin/studio bin/Action.o bin/Studio.o bin/Trainer.o bin/Workout.o bin/main.o
+	g++ -o bin/studio bin/Customer.o bin/Action.o bin/Studio.o bin/Trainer.o bin/Workout.o bin/main.o
 	@echo 'Finished building target: main'
 	@echo ' '
 
