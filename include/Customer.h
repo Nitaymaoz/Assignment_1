@@ -14,7 +14,6 @@ public:
     int getId() const;
     virtual Customer* clone() =0;
     virtual ~Customer() = default; // Need to add Destructor to all customer's classes
-    Customer* makeNewCustomer(std::string input,int id);
 private:
     const std::string name;
     const int id;

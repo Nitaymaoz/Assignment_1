@@ -47,9 +47,7 @@ void OpenTrainer::act(Studio &studio) {
     else addToLog(toString() + " Error: " + getErrorMsg());
 }
 
-OpenTrainer::OpenTrainer(int id,
-                         std::vector<Customer *> &customersList) : trainerId(id), customers(
-        customersList) {} //initialized customers in the initialization list
+OpenTrainer::OpenTrainer(int id,std::vector<Customer *> &customersList) : trainerId(id), customers(customersList){}
 
 std::string OpenTrainer::toString() const {
     std::string tostring = "open " + std::to_string(trainerId);
@@ -57,6 +55,10 @@ std::string OpenTrainer::toString() const {
         tostring += " " + customer->toString();
     }
     return tostring;
+}
+
+BaseAction *OpenTrainer::clone() {
+    return new OpenTrainer (*this);
 }
 
 //Order functions
@@ -86,6 +88,9 @@ std::string Order::toString() const {
     return ("order " + trainerId);
 }
 
+BaseAction *Order::clone() {
+    return new Order (*this);
+}
 
 //MoveCustomer functions
 
@@ -107,9 +112,9 @@ void MoveCustomer::act(Studio &studio) {
         for (OrderPair pair: orderlist) {
             if (pair.first != id) {
                 newOrderList.push_back(
-                        pair);   // add all values to a new list - we'll maybe need to use makepair function
+                        copyWorkout(pair));   // add all values to a new list - we'll maybe need to use makepair function
             } else {
-                removedOrders.push_back(pair);
+                removedOrders.push_back(copyWorkout(pair));
             }
         }
         srctrainer->setOrders(newOrderList); //using a new function to change customers in trainer
@@ -131,6 +136,10 @@ void MoveCustomer::act(Studio &studio) {
 
 std::string MoveCustomer::toString() const {
     return ("move " + std::to_string(srcTrainer) + " " + std::to_string(dstTrainer) + " " + std::to_string(id));
+}
+
+BaseAction *MoveCustomer::clone() {
+    return new MoveCustomer (*this);
 }
 
 // Class Close
@@ -157,7 +166,9 @@ std::string Close::toString() const {
     return ("close " + std::to_string(trainerId));
 }
 
-
+BaseAction *Close::clone() {
+    return new Close (*this);
+}
 
 //Class CloseAll
 
@@ -179,6 +190,10 @@ std::string CloseAll::toString() const {
     return "closeall";
 }
 
+BaseAction *CloseAll::clone() {
+    return new CloseAll (*this);
+}
+
 //Class PrintWorkoutOptions
 
 PrintWorkoutOptions::PrintWorkoutOptions() {}
@@ -195,6 +210,10 @@ void PrintWorkoutOptions::act(Studio &studio) {
 
 std::string PrintWorkoutOptions::toString() const {
     return ("workout_options");
+}
+
+BaseAction *PrintWorkoutOptions::clone() {
+    return new PrintWorkoutOptions (*this);
 }
 
 //Class PrintTrainerStatus
@@ -225,6 +244,10 @@ void PrintTrainerStatus::act(Studio &studio) {
     addToLog(toString() + " Completed");
 }
 
+BaseAction *PrintTrainerStatus::clone() {
+    return new PrintTrainerStatus (*this);
+}
+
 //Class PrintActionslog
 
 PrintActionsLog::PrintActionsLog() {}
@@ -238,6 +261,9 @@ std::string PrintActionsLog::toString() const {
     return "log";
 }
 
+BaseAction *PrintActionsLog::clone() {
+    return new PrintActionsLog (*this);
+}
 
 //Class BackupStudio
 
@@ -250,6 +276,10 @@ std::string BackupStudio::toString() const {
 void BackupStudio::act(Studio &studio) {
     *backup = studio; //assignment operator
     addToLog(toString());
+}
+
+BaseAction *BackupStudio::clone() {
+    return new BackupStudio (*this);
 }
 
 //Class RestoreStudio
@@ -272,4 +302,11 @@ void RestoreStudio::act(Studio &studio) {
     else addToLog(toString() + " Error: " + getErrorMsg());
 }
 
+BaseAction *RestoreStudio::clone() {
+    return new RestoreStudio (*this);
+}
 
+OrderPair BaseAction::copyWorkout(OrderPair pair) {
+    return (std::make_pair(pair.first,Workout(pair.second.getId(), pair.second.getName(),
+                                              pair.second.getPrice(), pair.second.getType())));
+}

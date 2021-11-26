@@ -24,6 +24,7 @@ public:
     std::vector<Workout>& getWorkoutOptions();
     void setOpen(bool state); //Set open field
     std::string getWorkOutName(int workoutid);
+    Customer* makeNewCustomer(std::string input,int id);
 
 private:
     bool open;

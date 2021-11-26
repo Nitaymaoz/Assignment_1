@@ -26,12 +26,13 @@ Trainer::~Trainer() {
 // Copy Constructor
 Trainer::Trainer(const Trainer &other) : capacity(other.capacity), original_capacity(other.original_capacity),
                                          open(other.open), customersList(), orderList(), salary(other.salary) {
-
+//    for(OrderPair pair: orderList){      //maybe needed
+//        orderList.push_back(pair);
+//    }
     orderList = std::vector<OrderPair>(other.orderList);
-    for (int i = 0; i < other.customersList.size(); ++i) {
-        customersList.push_back(other.customersList[i]->clone()); ////Added clone function check if works
+    for (Customer *customer: other.customersList) {
+        customersList.push_back(customer->clone()); ////Added clone function check if works
     }
-
 }
 
 //Copy Assignment Operator
@@ -47,19 +48,15 @@ Trainer &Trainer::operator=(const Trainer &other) {
             customersList.push_back(customer->clone());
         }
         for (OrderPair pair: other.orderList) {
-            OrderPair newPair = std::make_pair(pair.first, pair.second);
-            orderList.push_back(newPair); //check new pair
+            orderList.push_back(copyWorkout(pair));
         }
     }
     return *this;
 }
 
 // Move Constructor
-Trainer::Trainer(Trainer &&other) {
-    capacity = other.capacity;
-    open = other.open;
-    original_capacity = other.original_capacity;
-    salary = other.salary;
+Trainer::Trainer(Trainer &&other) : capacity(other.capacity), original_capacity(other.original_capacity),
+                                    open(other.open), customersList(), orderList(), salary(other.salary) {
     customersList = std::move(other.customersList);
     orderList = std::move(other.orderList);
 }
@@ -89,11 +86,12 @@ void Trainer::addCustomer(Customer *customer) {
 }
 
 void Trainer::removeCustomer(int id) {
-    bool deleted = false;
-    for (int i = 0; i < customersList.size() || deleted; ++i) {
-        if (customersList[i]->getId() == id) {
-            customersList.erase(customersList.begin() + i); //check if cause memory leak
-            deleted = true;
+    int counter = 0;
+    for (Customer *customer: customersList) {
+        counter++;
+        if (customer->getId() == id) {
+            customersList.erase(customersList.begin() + counter); //check if cause memory leak
+            break;
         }
     }
     capacity = capacity + 1;
@@ -101,9 +99,9 @@ void Trainer::removeCustomer(int id) {
 
 Customer *Trainer::getCustomer(int id) {
     Customer *customer;
-    for (int i = 0; i < customersList.size(); ++i) {
-        if (customersList[i]->getId() == id) {
-            customer = customersList[i];
+    for (Customer *customer1: customersList) {
+        if (customer1->getId() == id) {
+            customer = customer1;
             break;
         }
     }
@@ -124,7 +122,8 @@ void Trainer::order(const int customer_id, const std::vector<int> workout_ids,
         for (Workout workout: workout_options) {
             if (workout.getId() == id) {
                 orderList.push_back(std::make_pair(customer_id,
-                                                   workout));//check if works, there's a possibility we need to make a new object for workout
+                                                   Workout(workout.getId(), workout.getName(), workout.getPrice(),
+                                                           workout.getType())));
                 break;
             }
         }
@@ -147,7 +146,7 @@ void Trainer::closeTrainer() {
 
 int Trainer::getSalary() {
     int tempsalary = 0;
-    for (OrderPair pair : orderList) {
+    for (OrderPair pair: orderList) {
 
         tempsalary += pair.second.getPrice();
     }
@@ -159,11 +158,20 @@ bool Trainer::isOpen() { return open; }
 
 void Trainer::setOrders(std::vector <OrderPair> orders) {
     orderList.clear();
-    for(OrderPair pair : orders){
-        orderList.push_back(pair);
+    for (OrderPair pair: orders) {
+        orderList.push_back(copyWorkout(pair));
     }
 }
 
 void Trainer::addOrder(OrderPair order) {
-    orderList.push_back(order);
+    orderList.push_back(copyWorkout(order));
+}
+
+Trainer *Trainer::clone() {
+    return new Trainer(*this);
+}
+
+OrderPair Trainer::copyWorkout(OrderPair pair) {
+    return (std::make_pair(pair.first,Workout(pair.second.getId(), pair.second.getName(),
+                                              pair.second.getPrice(), pair.second.getType())));
 }

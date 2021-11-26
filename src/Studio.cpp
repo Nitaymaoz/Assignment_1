@@ -3,7 +3,8 @@
 #include <algorithm>
 #include <map>
 
-Studio::Studio(const std::string &configFilePath) { // **Check if needs to throw exceptions**
+Studio::Studio(const std::string &configFilePath) : open(false), trainers(), workout_options(), actionsLog(),
+                                                    customerid(0) { // **Check if needs to throw exceptions**
     std::ifstream configFile("ExampleInput.txt");
     if (configFile.is_open()) {
         std::string line;
@@ -21,7 +22,7 @@ Studio::Studio(const std::string &configFilePath) { // **Check if needs to throw
             if (counter == 2) {
                 line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
                 std::string trainerCapacity;
-                for (int i = 0; i < line.size(); ++i) {
+                for (unsigned int i = 0; i < line.size(); ++i) {
                     if (line[i] != ',') trainerCapacity.push_back(line[i]);
                     else {
                         trainers.push_back(new Trainer(std::stoi(trainerCapacity)));
@@ -34,7 +35,7 @@ Studio::Studio(const std::string &configFilePath) { // **Check if needs to throw
                 line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
                 std::vector<int> commaIndexes;
                 int j = 0; // counts the commas
-                for (int i = 0; i < line.size() && j < 2; ++i) {
+                for (unsigned int i = 0; i < line.size() && j < 2; ++i) {
                     if (line[i] == ',') {
                         commaIndexes.push_back(i);
                         j++;
@@ -92,12 +93,13 @@ void Studio::start() {
                 int capacity = trainers[std::stoi(trainerid)]->getCapacity();
                 int trainercounter = 0;
                 while (!input.empty() || capacity > trainercounter) {
-                    customerList.push_back(Customer::makeNewCustomer(input, customerid));
+                    Customer *c = makeNewCustomer(input, customerid);
+                    customerList.push_back(c);
                     trainercounter++;
                     customerid++;
                     input.erase(0, input.find(" ") + 1);
                 }
-                BaseAction *openTrainer = new OpenTrainer(trainerid, customerList);
+                BaseAction *openTrainer = new OpenTrainer(std::stoi(trainerid), customerList);
                 openTrainer->act(*this);
             }
 
@@ -158,6 +160,23 @@ void Studio::start() {
 
 }
 
+Customer *Studio::makeNewCustomer(std::string input, int id) {
+    std::string name = input.substr(0, input.find(","));
+    char type = input[input.find(",") + 1];
+    switch (type) {
+        case 's':
+            return new SweatyCustomer(name, id);
+        case 'c':
+            return new CheapCustomer(name, id);
+        case 'm':
+            return new HeavyMuscleCustomer(name, id);
+        case 'f':
+            return new FullBodyCustomer(name, id);
+    }
+    return nullptr; // Never going to reach this
+
+}
+
 //Rule of 5
 //Destructor
 Studio::~Studio() {
@@ -188,10 +207,10 @@ Studio::Studio(const Studio &other) : open(other.open), trainers(), workout_opti
                                       actionsLog(), customerid(other.customerid) {
 
     for (Trainer *trainer: other.trainers) {
-        trainers.push_back(new Trainer(trainer));
+        trainers.push_back(trainer->clone());
     }
     for (BaseAction *action: other.actionsLog) {
-        actionsLog.push_back(new BaseAction(action));
+        actionsLog.push_back(action->clone());
     }
 }
 
@@ -201,24 +220,29 @@ Studio &Studio::operator=(const Studio &other) {
 
         trainers.clear();
         actionsLog.clear();
-        workout_options = other.workout_options;
+        for (Workout workout: other.workout_options) {
+            workout_options.push_back(
+                    Workout(workout.getId(), workout.getName(), workout.getPrice(), workout.getType()));
+        }
+//        workout_options = other.workout_options;
         open = other.open;
         customerid = other.customerid;
         for (Trainer *trainer: other.trainers) {
             trainers.push_back(new Trainer(*trainer));
         }
         for (BaseAction *action: other.actionsLog) {
-            actionsLog.push_back(new BaseAction(action));
+            actionsLog.push_back(action->clone());
         }
     }
     return *this;
 }
 
 //Move Constructor
-Studio::Studio(Studio &&other) {
-    workout_options = other.workout_options;
-    open = other.open;
-    customerid = other.customerid;
+Studio::Studio(Studio &&other) : open(other.open), trainers(other.trainers), workout_options(other.workout_options),
+                                 actionsLog(), customerid(other.customerid) {
+//    workout_options = other.workout_options;
+//    open = other.open;
+//    customerid = other.customerid;
     trainers = std::move(other.trainers);
     actionsLog = std::move(other.actionsLog);
 
@@ -230,7 +254,11 @@ const Studio &Studio::operator=(Studio &&other) {
 
         trainers.clear();
         actionsLog.clear();
-        workout_options = other.workout_options;
+        for (Workout workout: other.workout_options) {
+            workout_options.push_back(
+                    Workout(workout.getId(), workout.getName(), workout.getPrice(), workout.getType()));
+        }
+//        workout_options = other.workout_options;
         open = other.open;
         customerid = other.customerid;
         trainers = std::move(other.trainers);
@@ -253,4 +281,5 @@ std::string Studio::getWorkOutName(int workoutid) {
     for (Workout workout: workout_options) {
         if (workout.getId() == workoutid) return workout.getName();
     }
+    return "Never gonna happen bro";
 }

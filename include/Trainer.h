@@ -28,6 +28,8 @@ public:
     bool isOpen();
     void setOrders(std::vector<OrderPair> orders);
     void addOrder(OrderPair order);
+    virtual Trainer* clone();
+    OrderPair copyWorkout(OrderPair pair);
 
 private:
     int capacity;
