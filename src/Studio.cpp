@@ -22,16 +22,15 @@ Studio::Studio(const std::string &configFilePath) : open(false), trainers(), wor
             if (counter == 2) {
                 line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
                 std::string trainerCapacity;
+                line.push_back(',');
                 for (unsigned int i = 0; i < line.size(); ++i) {
                     if (line[i] != ',') {
                         trainerCapacity.push_back(line[i]);
+                    }
+                    else {
                         trainers.push_back(new Trainer(std::stoi(trainerCapacity)));
                         trainerCapacity.clear();
                     }
-//                    else {
-//                        trainers.push_back(new Trainer(std::stoi(trainerCapacity)));
-//                        trainerCapacity.clear();
-//                    }
                 }
             }
 
@@ -76,20 +75,20 @@ void Studio::start() {
         std::string input;
         getline(std::cin,input);
         std::string action = input.substr(0, input.find(" "));
-        std::map<std::string, int> m{{"open",            1},
-                                     {"order",           2},
-                                     {"move",            3},
-                                     {"close",           4},
-                                     {"closeall",        5},
-                                     {"workout_options", 6},
-                                     {"status",          7},
-                                     {"log",             8},
-                                     {"backup",          9},
-                                     {"restore",         10}};
+//        std::map<std::string, int> m{{"open",            1},
+//                                     {"order",           2},
+//                                     {"move",            3},
+//                                     {"close",           4},
+//                                     {"closeall",        5},
+//                                     {"workout_options", 6},
+//                                     {"status",          7},
+//                                     {"log",             8},
+//                                     {"backup",          9},
+//                                     {"restore",         10}};
 
-        switch (m[action]) {
+//        switch (m[action]) {
 
-            case 1: {
+            if(action=="open") {
                 input.erase(0, 5);
                 std::string trainerid = input.substr(0, input.find(" "));
                 input.erase(0, input.find(" ") + 1);
@@ -109,13 +108,13 @@ void Studio::start() {
                 openTrainer->act(*this);
             }
 
-            case 2: {
+            else if(action=="order"){
                 std::string trainerid = input.substr(6, std::string::npos);
                 BaseAction *order = new Order(std::stoi(trainerid));
                 order->act(*this);
             }
 
-            case 3: {
+            else if(action=="move"){
                 input.erase(0, 5);
                 std::string srctrainer = input.substr(0, input.find(" "));
                 input.erase(0, input.find(" ") + 1);
@@ -127,44 +126,43 @@ void Studio::start() {
                 move->act(*this);
             }
 
-            case 4: {
+            else if(action=="close") {
                 std::string trainerId = input.substr(6);
                 BaseAction *close = new Close(std::stoi(trainerId));
                 close->act(*this);
             }
 
-            case 5: {
+            else if(action=="closeall") {
                 BaseAction *closeAll = new CloseAll();
                 closeAll->act(*this);
             }
 
-            case 6: {
+            else if(action=="workout_options"){
                 BaseAction *printWorkouts = new PrintWorkoutOptions();
                 printWorkouts->act(*this);
             }
 
-            case 7: {
+            else if(action=="status"){
                 std::string trainerid = input.substr(7);
                 BaseAction *printStatus = new PrintTrainerStatus(std::stoi(trainerid));
                 printStatus->act(*this);
             }
-            case 8: {
+            else if(action=="log"){
                 BaseAction *printLog = new PrintActionsLog();
                 printLog->act(*this);
             }
-            case 9: {
+            else if(action=="backup"){
                 BaseAction *backup = new BackupStudio();
                 backup->act(*this);
             }
 
-            case 10: {
+            else if(action=="restore") {
                 BaseAction *restore = new RestoreStudio();
                 restore->act(*this);
             }
         }
     }
 
-}
 
 Customer *Studio::makeNewCustomer(std::string input, int id) {
     std::string name = input.substr(0, input.find(","));

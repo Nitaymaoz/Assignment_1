@@ -76,14 +76,14 @@ Order::Order(int id) : trainerId(id) {}
 
 void Order::act(Studio &studio) {
     Trainer *trainer = studio.getTrainer(trainerId);
-    if (trainer == nullptr || trainer->isOpen()) error("Trainer does not exist or is not open");
+    if (trainer == nullptr || !trainer->isOpen()) error("Trainer does not exist or is not open");
     else {
         std::vector <Workout> workout_options = studio.getWorkoutOptions();
         for (Customer *customer: trainer->getCustomers()) {
             std::vector<int> order = customer->order(workout_options);
             trainer->order(customer->getId(), order, workout_options);
             for (int workoutid: order) {
-                std::cout << customer->getName() + " Is Doing " + studio.getWorkOutName(order[workoutid]);
+                std::cout << customer->getName() + " Is Doing " + studio.getWorkOutName(workoutid)+ "\n";
             }
         }
         complete();
@@ -236,8 +236,9 @@ std::string PrintTrainerStatus::toString() const {
 void PrintTrainerStatus::act(Studio &studio) {
     if (!studio.getTrainer(trainerId)->isOpen()) {
         std::cout << "closed" << std::endl;
-    } else {
-        std::cout << "open" << std::endl;
+    }
+    else {
+        std::cout <<"Trainer "+ std::to_string(trainerId)+ " status: open" << std::endl;
         std::cout << "Customers:" << std::endl;
         for (Customer *customer: studio.getTrainer(trainerId)->getCustomers()) {
             std::cout << std::to_string(customer->getId()) + " " + customer->getName()
@@ -246,8 +247,10 @@ void PrintTrainerStatus::act(Studio &studio) {
         std::cout << "Orders:" << std::endl;
         for (OrderPair pair: studio.getTrainer(trainerId)->getOrders()) {
             std::cout << pair.second.getName() + " " + std::to_string(pair.second.getPrice()) + "NIS " +
-                         std::to_string(pair.first) << std::endl;
+                         std::to_string(pair.first) << std::endl; //print all orders <workoutname> <workoutprice> <customerid>
         }
+
+        std::cout << "Current Trainer's Salary: " +studio.getTrainer(trainerId)->getSalary() <<std::endl;
     }
     complete();
     addToLog(toString() + " Completed");

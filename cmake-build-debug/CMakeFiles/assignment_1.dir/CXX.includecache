@@ -48,13 +48,7 @@ Workout.h
 string
 -
 
-/home/nitaym/CLionProjects/assignment_1/src/Studio.cpp
-../include/Studio.h
-/home/nitaym/CLionProjects/assignment_1/include/Studio.h
-fstream
--
-algorithm
--
-map
--
+/home/nitaym/CLionProjects/assignment_1/src/Action.cpp
+../include/Action.h
+/home/nitaym/CLionProjects/assignment_1/include/Action.h
 

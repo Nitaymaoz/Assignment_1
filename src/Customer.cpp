@@ -79,7 +79,7 @@ std::vector<int> HeavyMuscleCustomer::order(const std::vector <Workout> &workout
     std::stable_sort(workout_plan.begin(),
                      workout_plan.end()); // sort from the cheapest to the most expensive . the reason to include <bits/stdc++.h>
     for (std::pair<int, int> workout: workout_plan) {
-        workout_plan_output.push_back(workout.second);
+        workout_plan_output.insert(workout_plan_output.begin(),workout.second);
     }
     return workout_plan_output;
 }
@@ -104,14 +104,14 @@ std::vector<int> FullBodyCustomer::order(const std::vector <Workout> &workout_op
     for (Workout workout: workout_options) {
         if (workout.getType() == 0) sort_anaerobic.push_back(std::make_pair(workout.getPrice(), workout.getId()));
         else if (workout.getType() == 1) sort_mix.push_back(std::make_pair(workout.getPrice(), workout.getId()));
-        else sort_anaerobic.push_back(std::make_pair(workout.getPrice(), workout.getId()));
+        else sort_cardio.push_back(std::make_pair(workout.getPrice(), workout.getId()));
     }
     std::vector<int> workout_plan;
     if (sort_mix.empty() && sort_cardio.empty() && sort_anaerobic.empty()) return workout_plan;
 
-    if (!sort_anaerobic.empty()) {
-        std::stable_sort(sort_anaerobic.begin(), sort_anaerobic.end());
-        workout_plan.push_back(sort_anaerobic.begin()->second);  // id of the cheapest anaerobic
+    if (!sort_cardio.empty()) {
+        std::stable_sort(sort_cardio.begin(), sort_cardio.end());
+        workout_plan.push_back(sort_cardio.begin()->second);     //id of cheapest cardio
     }
 
     if (!sort_mix.empty()) {
@@ -122,10 +122,12 @@ std::vector<int> FullBodyCustomer::order(const std::vector <Workout> &workout_op
                 workout_plan.push_back(sort_mix[i + 1].second); // id of most expensive mix (with the smallest id)
         }
     }
-    if (!sort_cardio.empty()) {
-        std::stable_sort(sort_cardio.begin(), sort_cardio.end());
-        workout_plan.push_back(sort_cardio.begin()->second);     //id of cheapest cardio
+
+    if (!sort_anaerobic.empty()) {
+        std::stable_sort(sort_anaerobic.begin(), sort_anaerobic.end());
+        workout_plan.push_back(sort_anaerobic.begin()->second);  // id of the cheapest anaerobic
     }
+
     return workout_plan;
 }
 
