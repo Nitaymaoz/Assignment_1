@@ -24,9 +24,7 @@ Studio::Studio(const std::string &configFilePath) : open(false), trainers(), wor
                 std::string trainerCapacity;
                 line.push_back(',');
                 for (unsigned int i = 0; i < line.size(); ++i) {
-                    if (line[i] != ',') {
-                        trainerCapacity.push_back(line[i]);
-                    }
+                    if (line[i] != ',') trainerCapacity.push_back(line[i]);
                     else {
                         trainers.push_back(new Trainer(std::stoi(trainerCapacity)));
                         trainerCapacity.clear();
