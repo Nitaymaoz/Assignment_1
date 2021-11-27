@@ -5,7 +5,7 @@
 
 Studio::Studio(const std::string &configFilePath) : open(false), trainers(), workout_options(), actionsLog(),
                                                     customerid(0) { // **Check if needs to throw exceptions**
-    std::ifstream configFile("ExampleInput.txt");
+    std::ifstream configFile(configFilePath);
     if (configFile.is_open()) {
         std::string line;
         int counter = 0;
@@ -23,11 +23,15 @@ Studio::Studio(const std::string &configFilePath) : open(false), trainers(), wor
                 line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
                 std::string trainerCapacity;
                 for (unsigned int i = 0; i < line.size(); ++i) {
-                    if (line[i] != ',') trainerCapacity.push_back(line[i]);
-                    else {
+                    if (line[i] != ',') {
+                        trainerCapacity.push_back(line[i]);
                         trainers.push_back(new Trainer(std::stoi(trainerCapacity)));
                         trainerCapacity.clear();
                     }
+//                    else {
+//                        trainers.push_back(new Trainer(std::stoi(trainerCapacity)));
+//                        trainerCapacity.clear();
+//                    }
                 }
             }
 
@@ -70,7 +74,7 @@ void Studio::start() {
     std::cout << "Studio is now open!" << std::endl;
     while (open) {
         std::string input;
-        std::cin >> input;
+        getline(std::cin,input);
         std::string action = input.substr(0, input.find(" "));
         std::map<std::string, int> m{{"open",            1},
                                      {"order",           2},
@@ -92,12 +96,14 @@ void Studio::start() {
                 std::vector < Customer * > customerList;
                 int capacity = trainers[std::stoi(trainerid)]->getCapacity();
                 int trainercounter = 0;
-                while (!input.empty() || capacity > trainercounter) {
+                while (!input.empty() && capacity > trainercounter) {
                     Customer *c = makeNewCustomer(input, getCustomerID());
                     customerList.push_back(c);
                     trainercounter++;
                     customerid++;
-                    input.erase(0, input.find(" ") + 1);
+                    if (input.find(" ")!= input.npos)
+                        input.erase(0, input.find(" ") + 1);
+                    else input.clear();
                 }
                 BaseAction *openTrainer = new OpenTrainer(std::stoi(trainerid), customerList);
                 openTrainer->act(*this);
